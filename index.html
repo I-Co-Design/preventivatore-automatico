@@ -21,6 +21,7 @@
       border-radius: 18px;
       box-shadow: 0 8px 32px rgba(60,90,150,0.14);
       padding: 32px 24px 24px 24px;
+      display: none;
     }
     .logo {
       display: block;
@@ -124,7 +125,7 @@
       box-shadow: 0 1px 4px rgba(60,90,150,0.10);
       font-weight: 500;
     }
-    .btn {
+    .btn, .login-btn {
       display: block;
       width: 100%;
       padding: 12px;
@@ -139,7 +140,7 @@
       box-shadow: 0 2px 8px rgba(60,90,150,0.10);
       transition: background 0.2s, box-shadow 0.2s;
     }
-    .btn:hover {
+    .btn:hover, .login-btn:hover {
       background: linear-gradient(90deg, #234078 60%, #4374cf 100%);
       box-shadow: 0 4px 12px rgba(60,90,150,0.17);
     }
@@ -149,6 +150,50 @@
       padding: 24px 0 8px 0;
       font-size: 0.97em;
       letter-spacing: 0.5px;
+    }
+    /* Login overlay */
+    .login-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(36,64,120,0.09);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.2s;
+    }
+    .login-box {
+      background: #fff;
+      box-shadow: 0 8px 32px rgba(36,64,120,0.16);
+      border-radius: 18px;
+      padding: 36px 28px 28px 28px;
+      max-width: 340px;
+      text-align: center;
+    }
+    .login-box h2 {
+      color: #234078;
+      font-size: 1.3em;
+      margin-bottom: 24px;
+      margin-top: 0;
+    }
+    .login-box input[type='password'] {
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #c8d1e1;
+      font-size: 1em;
+      width: 100%;
+      margin-bottom: 16px;
+      transition: border 0.2s;
+    }
+    .login-box input[type='password']:focus {
+      border-color: #4374cf;
+      outline: none;
+    }
+    .login-error {
+      color: #d32f2f;
+      margin-bottom: 8px;
+      font-size: 0.99em;
+      min-height: 28px;
     }
     @media (max-width: 700px) {
       .container {
@@ -166,11 +211,25 @@
         font-size: 0.99em;
         padding: 10px;
       }
+      .login-box {
+        padding: 18px 8vw;
+        max-width: 95vw;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <!-- Login Overlay -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+      <h2>Accesso Preventivatore</h2>
+      <div class="login-error" id="loginError"></div>
+      <input type="password" id="loginPassword" placeholder="Password" autocomplete="off" />
+      <button class="login-btn" onclick="checkPassword()">Entra</button>
+    </div>
+  </div>
+
+  <div class="container" id="mainContainer">
     <img src="LOGO PASOLINI CC.jpg" alt="Logo Pasolini" class="logo">
     <h1>Preventivatore Dinamico</h1>
 
@@ -185,6 +244,12 @@
       <label for="linea">Seleziona la linea prodotto:</label>
       <select id="linea" onchange="mostraProdotti()">
         <option value="">-- Seleziona --</option>
+        <option value="PASOLINI_MEP">PASOLINI_MEP</option>
+        <option value="INTRAC">INTRAC</option>
+        <option value="FORTEZZA">FORTEZZA</option>
+        <option value="CEFLA">CEFLA</option>
+        <option value="SE B">SE B</option>
+        <option value="SEV G">SEV G</option>
       </select>
     </div>
 
@@ -215,6 +280,26 @@
   </footer>
 
   <script>
+    // Login logic
+    function checkPassword() {
+      const pwdInput = document.getElementById('loginPassword');
+      const errorBox = document.getElementById('loginError');
+      const password = pwdInput.value.trim();
+      if (password === 'PASOLINI2025') {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainContainer').style.display = 'block';
+      } else {
+        errorBox.textContent = 'Password errata. Riprova.';
+        pwdInput.value = '';
+        pwdInput.focus();
+      }
+    }
+    // Invio con Enter
+    document.getElementById('loginPassword').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') checkPassword();
+    });
+
+    // Preventivatore logic
     let prodotti = [];
     let prodottiLinea = [];
 
@@ -223,20 +308,7 @@
       .then(response => response.json())
       .then(data => {
         prodotti = data;
-        popolaLinee();
       });
-
-    // Popola la select con le linee prodotto trovate nel JSON
-    function popolaLinee() {
-      const select = document.getElementById('linea');
-      const linee = [...new Set(prodotti.map(p => p.linea))];
-      linee.forEach(linea => {
-        const opt = document.createElement('option');
-        opt.value = linea;
-        opt.textContent = linea;
-        select.appendChild(opt);
-      });
-    }
 
     // Mostra i prodotti della linea selezionata
     function mostraProdotti() {
