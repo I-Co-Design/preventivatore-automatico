@@ -3,58 +3,216 @@
 <head>
   <meta charset="UTF-8">
   <title>Preventivatore Dinamico</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4;}
-    h2 { text-align: center;}
-    .logo { display: block; margin: 0 auto 20px auto; max-width: 300px;}
-    table { width: 100%; border-collapse: collapse; background: #fff;}
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center;}
-    th { background: #eee;}
-    input[type='number'], input[type='text'] { width: 90%; padding: 5px;}
-    .totale { text-align: right; margin-top: 10px;}
-    .dati-cliente { margin-bottom: 20px;}
-    button { margin-top: 10px; padding: 10px 20px; font-size: 16px;}
-    .linea-prodotti { margin-bottom: 20px;}
+    body {
+      background: #f7f9fb;
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto 40px auto;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(60,90,150,0.14);
+      padding: 32px 24px 24px 24px;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 18px auto;
+      max-width: 180px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.1em;
+      font-weight: 700;
+      color: #234078;
+      margin-bottom: 18px;
+    }
+    .dati-cliente {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .dati-cliente label {
+      font-weight: 500;
+      color: #234078;
+      margin-bottom: 4px;
+    }
+    input[type='text'] {
+      padding: 10px;
+      border: 1px solid #c8d1e1;
+      border-radius: 8px;
+      font-size: 1em;
+      width: 100%;
+      transition: border 0.2s;
+    }
+    input[type='text']:focus {
+      border-color: #4374cf;
+      outline: none;
+    }
+    .linea-prodotti {
+      margin-bottom: 20px;
+    }
+    select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #c8d1e1;
+      font-size: 1em;
+      background: #f2f6fc;
+      color: #234078;
+      width: 100%;
+      margin-top: 6px;
+      transition: border 0.2s;
+    }
+    select:focus {
+      border-color: #4374cf;
+      outline: none;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(60,90,150,0.10);
+    }
+    th, td {
+      padding: 10px 8px;
+      text-align: center;
+      font-size: 1em;
+    }
+    th {
+      background: #eaf0fa;
+      color: #234078;
+      font-weight: 600;
+      border-bottom: 1px solid #c8d1e1;
+    }
+    td {
+      border-bottom: 1px solid #f2f6fc;
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    input[type='number'] {
+      width: 60px;
+      padding: 7px;
+      border-radius: 8px;
+      border: 1px solid #c8d1e1;
+      font-size: 1em;
+      transition: border 0.2s;
+    }
+    input[type='number']:focus {
+      border-color: #4374cf;
+      outline: none;
+    }
+    .totale {
+      text-align: right;
+      margin-top: 18px;
+      font-size: 1.1em;
+      color: #234078;
+      background: #f2f6fc;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(60,90,150,0.10);
+      font-weight: 500;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #4374cf 60%, #234078 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 20px;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(60,90,150,0.10);
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover {
+      background: linear-gradient(90deg, #234078 60%, #4374cf 100%);
+      box-shadow: 0 4px 12px rgba(60,90,150,0.17);
+    }
+    footer {
+      text-align: center;
+      color: #a3adc6;
+      padding: 24px 0 8px 0;
+      font-size: 0.97em;
+      letter-spacing: 0.5px;
+    }
+    @media (max-width: 700px) {
+      .container {
+        max-width: 97vw;
+        margin: 16px 1vw;
+        padding: 18px 6vw 18px 6vw;
+      }
+      h1 {
+        font-size: 1.3em;
+      }
+      .logo {
+        max-width: 120px;
+      }
+      .totale {
+        font-size: 0.99em;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
-  <img src="LOGO PASOLINI CC.jpg" alt="Logo Pasolini" class="logo">
-  <h2>Preventivatore Dinamico</h2>
+  <div class="container">
+    <img src="LOGO PASOLINI CC.jpg" alt="Logo Pasolini" class="logo">
+    <h1>Preventivatore Dinamico</h1>
 
-  <div class="dati-cliente">
-    <label>Nome Punto Vendita: <input type="text" id="puntoVendita"></label><br><br>
-    <label>Intestazione Fatturazione: <input type="text" id="intestazione"></label>
-  </div>
+    <div class="dati-cliente">
+      <label>Nome Punto Vendita:</label>
+      <input type="text" id="puntoVendita" placeholder="Inserisci nome punto vendita">
+      <label>Intestazione Fatturazione:</label>
+      <input type="text" id="intestazione" placeholder="Inserisci intestazione fatturazione">
+    </div>
 
-  <div class="linea-prodotti">
-    <label for="linea">Seleziona la linea prodotto:
+    <div class="linea-prodotti">
+      <label for="linea">Seleziona la linea prodotto:</label>
       <select id="linea" onchange="mostraProdotti()">
         <option value="">-- Seleziona --</option>
       </select>
-    </label>
+    </div>
+
+    <table id="tabella-preventivo" style="display:none;">
+      <thead>
+        <tr>
+          <th>Codice</th>
+          <th>Descrizione</th>
+          <th>Prezzo</th>
+          <th>Quantità</th>
+          <th>Totale</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+
+    <div class="totale" style="display:none;">
+      <div><strong>Totale netto:</strong> €<span id="netto">0.00</span></div>
+      <div>IVA 22%: €<span id="iva">0.00</span></div>
+      <div><strong>Totale con IVA:</strong> €<span id="totale">0.00</span></div>
+    </div>
+
+    <button onclick="window.print()" style="display:none;" id="btnStampa" class="btn">Stampa / Salva Preventivo</button>
   </div>
-
-  <table id="tabella-preventivo" style="display:none;">
-    <thead>
-      <tr>
-        <th>Codice</th>
-        <th>Descrizione</th>
-        <th>Prezzo</th>
-        <th>Quantità</th>
-        <th>Totale</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-
-  <div class="totale" style="display:none;">
-    <strong>Totale netto: €<span id="netto">0.00</span></strong><br>
-    IVA 22%: €<span id="iva">0.00</span><br>
-    <strong>Totale con IVA: €<span id="totale">0.00</span></strong>
-  </div>
-
-  <button onclick="window.print()" style="display:none;" id="btnStampa">Stampa/Salva Preventivo</button>
+  <footer>
+    © 2025 Pasolini CC · Preventivatore Automatico
+  </footer>
 
   <script>
     let prodotti = [];
@@ -91,7 +249,7 @@
         tr.innerHTML = `
           <td>${prodotto.codice}</td>
           <td>${prodotto.descrizione}</td>
-          <td>${prodotto.prezzo.toFixed(2)}</td>
+          <td>€${prodotto.prezzo.toFixed(2)}</td>
           <td><input type="number" min="0" value="0" onchange="calcolaTotali()"></td>
           <td class="riga-tot">0.00</td>
         `;
