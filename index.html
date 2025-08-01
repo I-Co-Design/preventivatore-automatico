@@ -16,12 +16,29 @@
         button:disabled { background: #ccc; cursor: not-allowed; }
         .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
         .product-item { display: flex; align-items: center; margin-bottom: 8px; }
-        .product-details { flex-grow: 1; font-size: 0.8em; } /* Caratteri più piccoli per i prodotti */
+        .product-details { flex-grow: 1; font-size: 0.8em; }
         .product-item input[type="number"] { width: 80px; margin-left: 10px; }
         .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
         .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
         .button-group { display: flex; justify-content: space-between; margin-top: 20px; }
-        .preview table td, .preview table th { font-size: 0.8em; } /* Caratteri più piccoli nella tabella di anteprima */
+        .preview table td, .preview table th { font-size: 0.8em; }
+        
+        /* Stili per l'input della password e l'icona */
+        .password-container {
+            position: relative;
+            width: 100%;
+        }
+        .password-container input {
+            width: 100%;
+            padding-right: 40px; /* Spazio per l'icona */
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -32,7 +49,10 @@
         <div id="login-section">
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password">
+                <div class="password-container">
+                    <input type="password" id="passwordInput">
+                    <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+                </div>
             </div>
             <button onclick="checkLogin()">Accedi</button>
         </div>
@@ -349,13 +369,25 @@
         let currentLinea = null;
 
         function checkLogin() {
-            const pass = document.getElementById('password').value;
+            const pass = document.getElementById('passwordInput').value;
             if (pass === PASSWORD) {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('cliente-section').classList.remove('hidden');
                 popolaLinee();
             } else {
                 alert('Password errata!');
+            }
+        }
+        
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('passwordInput');
+            const toggleIcon = document.querySelector('.toggle-password');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈'; // Icona per nascondere
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️'; // Icona per mostrare
             }
         }
 
