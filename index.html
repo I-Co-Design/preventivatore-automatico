@@ -5,38 +5,30 @@
     <title>PREVENTIVATORE AUTOMATICO PROGETTO PROLUNGHE</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
-        .container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #bbb; padding: 30px; }
+        .container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); padding: 30px; }
         h1 { text-align: center; color: #003366; }
         .logo { display: block; margin: 0 auto 20px; width: 180px; }
         .hidden { display: none; }
         .form-group { margin-bottom: 18px; }
         label { font-weight: bold; display: block; margin-bottom: 6px; }
-        input[type="text"], input[type="email"], input[type="password"], textarea, select { width: 100%; padding: 8px; }
-        button { background: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        input[type="text"], input[type="email"], input[type="password"], textarea, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #004488; }
         button:disabled { background: #ccc; cursor: not-allowed; }
-        .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
+        .category { background: #f0f4f7; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
         .product-item { display: flex; align-items: center; margin-bottom: 8px; }
         .product-details { flex-grow: 1; font-size: 0.8em; }
         .product-item input[type="number"] { width: 80px; margin-left: 10px; }
-        .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; font-size: 0.8em; }
+        .preview { background: #eef; padding: 18px; border-radius: 8px; margin-bottom: 18px; font-size: 0.8em; line-height: 1.5; }
         .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
         .button-group { display: flex; justify-content: space-between; margin-top: 20px; }
-        .preview table { width: 100%; border-collapse: collapse; }
-        .preview table td, .preview table th { font-size: 0.9em; padding: 5px; border: 1px solid #ddd; }
+        .preview table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .preview table td, .preview table th { font-size: 0.9em; padding: 8px; border: 1px solid #ddd; text-align: left; }
         .preview table th.align-right, .preview table td.align-right { text-align: right; }
         .total-row { font-weight: bold; }
         .total-row td { border-top: 2px solid #000; }
-
-        /* Stili per l'input della password e l'icona */
-        .password-container {
-            position: relative;
-            width: 100%;
-        }
-        .password-container input {
-            width: 100%;
-            padding-right: 40px;
-            box-sizing: border-box;
-        }
+        .password-container { position: relative; width: 100%; }
+        .password-container input { padding-right: 40px; }
         .toggle-password {
             position: absolute;
             right: 10px;
@@ -47,26 +39,17 @@
             font-size: 1.2em;
             color: #555;
         }
+        .footer { display: none; }
 
-        /* Stili per il footer */
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 0.75em;
-            color: #888;
-            display: none;
-        }
-
-        /* Stili specifici per la stampa */
         @media print {
-            body { font-size: 12px; }
-            .container { box-shadow: none; border: none; padding: 0; }
-            button, .button-group, .email-info, #note-section, .password-container, h1, img.logo { display: none; }
+            body { font-size: 12px; color: #000; background: #fff; }
+            .container { box-shadow: none; border: none; padding: 0; margin: 0; }
+            button, .button-group, .email-info, #note-section, #login-section, #cliente-section, #preventivo-section, #conferma-section, .logo, h1 { display: none !important; }
             #anteprima-section { display: block !important; margin: 0; }
-            .preview { background: none; }
+            .preview { background: none; padding: 0; margin: 0; }
             h2, h3, p { margin: 5px 0; }
             .footer {
-                display: flex;
+                display: flex !important;
                 align-items: center;
                 justify-content: center;
                 margin-top: 30px;
@@ -90,7 +73,7 @@
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="password-container">
-                    <input type="password" id="passwordInput">
+                    <input type="password" id="passwordInput" required>
                     <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
                 </div>
             </div>
@@ -112,9 +95,12 @@
             </div>
             <div class="form-group">
                 <label for="linea">Seleziona Linea Prodotto</label>
-                <select id="linea"></select>
+                <select id="linea" onchange="generateProductList(this.value)"></select>
             </div>
-            <button onclick="startPreventivo()">Avanti</button>
+            <div class="button-group">
+                <button onclick="tornaAllaHome()">Annulla</button>
+                <button onclick="startPreventivo()">Avanti</button>
+            </div>
         </div>
 
         <div id="preventivo-section" class="hidden">
@@ -159,11 +145,8 @@
     </div>
 
     <script>
-        // Password di accesso
         const PASSWORD = "PASOLINI2025";
-        const IVA_RATE = 0.22; // 22%
-
-        // Database dei prodotti con i dati forniti
+        const IVA_RATE = 0.22;
         const prodotti = {
             "linee": {
                 "PASOLINI_MEP": {
@@ -407,8 +390,8 @@
                         "PORTAPREZZI": [
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
                             { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
-                            { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
+                            { "codice": "MPS.42.0992.BL", "colore": "BLU", "prezzo": 2.44 },
+                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
                         ]
                     }
                 }
@@ -417,18 +400,20 @@
 
         let preventivo = {};
         let lineeSelezionate = [];
-        let lineaCorrente = null;
+
+        window.onload = () => {
+            const now = new Date();
+            const today = now.toLocaleDateString();
+            document.title = `Preventivo Pasolini - ${today}`;
+            populateLinee();
+        };
 
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('passwordInput');
             const toggleIcon = document.querySelector('.toggle-password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.textContent = '🙈';
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️';
-            }
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            toggleIcon.textContent = isPassword ? '🙈' : '👁️';
         }
 
         function checkLogin() {
@@ -439,6 +424,7 @@
                 populateLinee();
             } else {
                 alert("Password errata. Riprova.");
+                document.getElementById('passwordInput').value = '';
             }
         }
 
@@ -448,7 +434,7 @@
             for (const key in prodotti.linee) {
                 const option = document.createElement('option');
                 option.value = key;
-                option.textContent = key.replace(/_/g, ' '); // Formatta il nome della linea
+                option.textContent = key.replace(/_/g, ' ');
                 lineaSelect.appendChild(option);
             }
         }
@@ -463,8 +449,6 @@
                 preventivo.cliente = { nomePuntoVendita, indirizzoPuntoVendita, fatturazione };
                 preventivo.linee = {};
                 lineeSelezionate = [linea];
-                lineaCorrente = linea;
-
                 document.getElementById('cliente-section').classList.add('hidden');
                 document.getElementById('preventivo-section').classList.remove('hidden');
                 generateProductList(linea);
@@ -475,9 +459,19 @@
 
         function generateProductList(linea) {
             const prodottiList = document.getElementById('prodotti-list');
-            prodottiList.innerHTML = `<h2>Preventivo per la linea: ${linea.replace(/_/g, ' ')}</h2>`;
-            const categorie = prodotti.linee[linea].categorie;
+            const lineaDivId = `linea-${linea}`;
+            
+            // Rimuove un'eventuale lista già esistente per la stessa linea
+            const existingLineaDiv = document.getElementById(lineaDivId);
+            if (existingLineaDiv) {
+                existingLineaDiv.remove();
+            }
 
+            const lineaDiv = document.createElement('div');
+            lineaDiv.id = lineaDivId;
+            lineaDiv.innerHTML = `<h2>Preventivo per la linea: ${linea.replace(/_/g, ' ')}</h2>`;
+
+            const categorie = prodotti.linee[linea].categorie;
             preventivo.linee[linea] = {};
 
             for (const categoria in categorie) {
@@ -490,30 +484,32 @@
                 categorie[categoria].forEach((prodotto, index) => {
                     const productItemDiv = document.createElement('div');
                     productItemDiv.className = 'product-item';
+                    const inputId = `quantita-${linea}-${categoria}-${index}`;
                     productItemDiv.innerHTML = `
                         <div class="product-details">
                             <strong>${prodotto.codice}</strong> - ${prodotto.descrizione} (${prodotto.colore})
                         </div>
-                        <input type="number" id="quantita-${linea}-${categoria}-${index}" min="0" value="0">
+                        <input type="number" id="${inputId}" min="0" value="0">
                     `;
                     categoriaDiv.appendChild(productItemDiv);
                 });
-                prodottiList.appendChild(categoriaDiv);
+                lineaDiv.appendChild(categoriaDiv);
             }
+            prodottiList.appendChild(lineaDiv);
         }
 
         function aggiungiLinea() {
-            const prodottiList = document.getElementById('prodotti-list');
-            const nuovaLinea = document.createElement('div');
-            nuovaLinea.className = 'form-group';
-            nuovaLinea.innerHTML = `
+            const selectorDiv = document.createElement('div');
+            selectorDiv.className = 'form-group new-line-selector';
+            selectorDiv.innerHTML = `
                 <label for="nuovaLineaSelect">Aggiungi un'altra Linea Prodotto</label>
                 <select id="nuovaLineaSelect"></select>
-                <button onclick="selezionaNuovaLinea()">Aggiungi</button>
+                <button onclick="selezionaNuovaLinea(this)">Aggiungi</button>
+                <button onclick="this.parentNode.remove()">Annulla</button>
             `;
-            prodottiList.appendChild(nuovaLinea);
-            
-            const nuovaLineaSelect = document.getElementById('nuovaLineaSelect');
+            document.getElementById('prodotti-list').appendChild(selectorDiv);
+
+            const nuovaLineaSelect = selectorDiv.querySelector('#nuovaLineaSelect');
             nuovaLineaSelect.innerHTML = '<option value="">Seleziona una linea...</option>';
             for (const key in prodotti.linee) {
                 if (!lineeSelezionate.includes(key)) {
@@ -525,55 +521,52 @@
             }
         }
 
-        function selezionaNuovaLinea() {
-            const nuovaLinea = document.getElementById('nuovaLineaSelect').value;
+        function selezionaNuovaLinea(button) {
+            const nuovaLineaSelect = button.parentNode.querySelector('#nuovaLineaSelect');
+            const nuovaLinea = nuovaLineaSelect.value;
             if (nuovaLinea && !lineeSelezionate.includes(nuovaLinea)) {
                 lineeSelezionate.push(nuovaLinea);
-                lineaCorrente = nuovaLinea;
                 generateProductList(nuovaLinea);
-                // Rimuove il selettore di "Aggiungi linea" per evitarne di aggiungerne troppi
-                document.getElementById('prodotti-list').lastChild.remove();
+                button.parentNode.remove();
             } else {
                 alert("Seleziona una linea valida.");
             }
         }
 
-        function calcolaTotale() {
-            let totale = 0;
-            for (const linea in preventivo.linee) {
-                for (const categoria in preventivo.linee[linea]) {
-                    preventivo.linee[linea][categoria].forEach(prodotto => {
-                        totale += prodotto.quantita * prodotto.prezzo;
-                    });
-                }
-            }
-            return totale;
-        }
-
         function mostraAnteprima() {
             const riepilogo = document.getElementById('riepilogo');
             riepilogo.innerHTML = '';
+            
+            // Re-inizializza il preventivo per ogni anteprima
+            preventivo.linee = {};
 
             const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
             const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
             const fatturazione = document.getElementById('fatturazione').value;
             const note = document.getElementById('note').value;
+            
+            if (!nomePuntoVendita || !indirizzoPuntoVendita || !fatturazione) {
+                alert("Compila tutti i campi dei dati del cliente per procedere.");
+                return;
+            }
 
             // Raccolta dei dati dai campi di input
             lineeSelezionate.forEach(linea => {
                 const categorie = prodotti.linee[linea].categorie;
+                preventivo.linee[linea] = {};
                 for (const categoria in categorie) {
+                    preventivo.linee[linea][categoria] = [];
                     categorie[categoria].forEach((prodotto, index) => {
                         const inputId = `quantita-${linea}-${categoria}-${index}`;
-                        const quantita = parseInt(document.getElementById(inputId).value) || 0;
-                        if (quantita > 0) {
-                            if (!preventivo.linee[linea][categoria]) {
-                                preventivo.linee[linea][categoria] = [];
+                        const inputElement = document.getElementById(inputId);
+                        if (inputElement) {
+                            const quantita = parseInt(inputElement.value) || 0;
+                            if (quantita > 0) {
+                                preventivo.linee[linea][categoria].push({
+                                    ...prodotto,
+                                    quantita: quantita
+                                });
                             }
-                            preventivo.linee[linea][categoria].push({
-                                ...prodotto,
-                                quantita: quantita
-                            });
                         }
                     });
                 }
@@ -591,15 +584,17 @@
             if (note) {
                 riepilogoHTML += `<p><strong>Note:</strong> ${note}</p>`;
             }
-            
-            lineeSelezionate.forEach(linea => {
-                riepilogoHTML += `<h3>Linea Prodotto: ${linea.replace(/_/g, ' ')}</h3>`;
-                let totaleLinea = 0;
 
+            lineeSelezionate.forEach(linea => {
+                let totaleLinea = 0;
+                let lineaHasProducts = false;
+
+                let lineaRiepilogoHTML = `<h3>Linea Prodotto: ${linea.replace(/_/g, ' ')}</h3>`;
                 for (const categoria in preventivo.linee[linea]) {
                     const prodottiCategoria = preventivo.linee[linea][categoria];
                     if (prodottiCategoria.length > 0) {
-                        riepilogoHTML += `<h4>${categoria}</h4>
+                        lineaHasProducts = true;
+                        lineaRiepilogoHTML += `<h4>${categoria}</h4>
                         <table>
                             <thead>
                                 <tr>
@@ -615,7 +610,7 @@
                         prodottiCategoria.forEach(prodotto => {
                             const subtotale = prodotto.quantita * prodotto.prezzo;
                             totaleLinea += subtotale;
-                            riepilogoHTML += `
+                            lineaRiepilogoHTML += `
                                 <tr>
                                     <td>${prodotto.codice}</td>
                                     <td>${prodotto.descrizione} (${prodotto.colore})</td>
@@ -625,14 +620,14 @@
                                 </tr>
                             `;
                         });
-                        riepilogoHTML += `</tbody></table><br>`;
+                        lineaRiepilogoHTML += `</tbody></table><br>`;
                     }
                 }
-
-                riepilogoHTML += `
-                    <p style="text-align: right; font-weight: bold;">Totale Linea ${linea.replace(/_/g, ' ')}: € ${totaleLinea.toFixed(2)}</p>
-                `;
-                totalePreventivo += totaleLinea;
+                if(lineaHasProducts) {
+                    riepilogoHTML += lineaRiepilogoHTML;
+                    riepilogoHTML += `<p style="text-align: right; font-weight: bold;">Totale Linea ${linea.replace(/_/g, ' ')}: € ${totaleLinea.toFixed(2)}</p><hr>`;
+                    totalePreventivo += totaleLinea;
+                }
             });
 
             const iva = totalePreventivo * IVA_RATE;
@@ -668,7 +663,8 @@
             document.getElementById('cliente-section').classList.remove('hidden');
             preventivo = {};
             lineeSelezionate = [];
-            lineaCorrente = null;
+            document.getElementById('prodotti-list').innerHTML = '';
+            document.getElementById('linea').value = '';
         }
 
         function concludiInvio() {
@@ -676,15 +672,6 @@
             document.getElementById('anteprima-section').classList.add('hidden');
             document.getElementById('conferma-section').classList.remove('hidden');
         }
-
-        // Inizializzazione
-        window.onload = () => {
-            const now = new Date();
-            const today = now.toLocaleDateString();
-            document.title = `Preventivo Pasolini - ${today}`;
-            populateLinee();
-        };
-
     </script>
 </body>
 </html>
