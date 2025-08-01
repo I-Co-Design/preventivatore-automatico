@@ -52,9 +52,17 @@
         @media print {
             body { font-size: 12px; }
             .container { box-shadow: none; border: none; padding: 0; }
-            button, .button-group, .email-info, #note-section { display: none; } /* Nascosto anche il campo note */
+            button, .button-group, .email-info, #note-section { display: none; }
             #anteprima-section { display: block !important; }
             h1, h2, h3, p { margin: 5px 0; }
+        }
+
+        /* Stili per il footer */
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.75em;
+            color: #888;
         }
     </style>
 </head>
@@ -128,6 +136,11 @@
             <div class="success">Preventivo salvato e stampato. Si prega di inviarlo manualmente.</div>
             <button onclick="tornaAllaHome()">Nuovo preventivo</button>
         </div>
+    </div>
+
+    <div class="footer">
+        <p>Sviluppato da I-Co Design di C. Carbini - Tutti i diritti riservati.</p>
+        <p>Il presente preventivatore non raccoglie dati personali.</p>
     </div>
 
     <script>
