@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -52,7 +52,7 @@
         @media print {
             body { font-size: 12px; }
             .container { box-shadow: none; border: none; padding: 0; }
-            button, .button-group, .email-info { display: none; }
+            button, .button-group, .email-info, #note-section { display: none; }
             #anteprima-section { display: block !important; }
             h1, h2, h3, p { margin: 5px 0; }
         }
@@ -103,10 +103,6 @@
         </div>
 
         <div id="preventivo-section" class="hidden">
-            <div class="form-group" id="note-section">
-                <label for="note">Note</label>
-                <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
-            </div>
             <div id="prodotti-list"></div>
             <div class="button-group">
                 <button onclick="tornaAChoice()">Indietro</button>
@@ -121,6 +117,10 @@
             <div class="preview" id="riepilogo"></div>
             <div class="email-info">
                 <p style="color: red; font-weight: bold; text-align: center;">ATTENZIONE: Il servizio di invio mail non è ancora attivo. Dopo aver stampato il preventivo, si prega di inviarlo manualmente all'indirizzo del responsabile commerciale Pasolini.</p>
+            </div>
+            <div class="form-group" id="note-section">
+                <label for="note">Note</label>
+                <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
             </div>
             <div class="button-group">
                 <button onclick="tornaAllaHome()">Torna alla Home</button>
@@ -380,7 +380,7 @@
                         "SCHIENALI": [
                             { "codice": "AS1253.S25.750.250.7035", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.50 },
                             { "codice": "AS1253.S25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.47 },
-                            { "codice": "AS1253.S25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO  RA", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 }
+                            { "codice": "AS1253.S25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO   RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 }
                         ],
                         "MENSOLE": [
                             { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA  DA 40 VERNICIATO RAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
@@ -390,7 +390,7 @@
                             { "codice": "5007024.M", "descrizione": "BARRA 1330mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 20.57 }
                         ],
                         "GANCI": [
-                            { "codice": "5007030", "descrizione": "GANCIO DA 30cm diam. 6 MM mod. INTRAC", "colore": "CROMATI", "prezzo": 2.71 }
+                            { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
                         ],
                         "PORTAPREZZI": [
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
@@ -403,274 +403,233 @@
             }
         };
 
-        // Variabili globali per lo stato dell'app
-        let storicoPreventivo = [];
-        let currentPreventivo = {};
-
-        // Funzioni di navigazione e logica dell'app
+        let preventivo = [];
+        let currentLinea = null;
 
         function checkLogin() {
-            const password = document.getElementById('passwordInput').value;
-            if (password === PASSWORD) {
+            const pass = document.getElementById('passwordInput').value;
+            if (pass === PASSWORD) {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('cliente-section').classList.remove('hidden');
-                populateProductLines();
+                popolaLinee();
             } else {
-                alert("Password errata. Riprova.");
+                alert('Password errata!');
             }
         }
-
+        
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('passwordInput');
             const toggleIcon = document.querySelector('.toggle-password');
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleIcon.textContent = "🙈";
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.textContent = '🙈';
             } else {
-                passwordInput.type = "password";
-                toggleIcon.textContent = "👁️";
+                passwordInput.type = 'password';
+                toggleIcon.textContent = '👁️';
             }
         }
 
-        function populateProductLines() {
-            const selectLinea = document.getElementById('linea');
-            selectLinea.innerHTML = ''; // Pulisce le opzioni esistenti
-            for (const linea in prodotti.linee) {
-                const option = document.createElement('option');
-                option.value = linea;
-                option.textContent = linea;
-                selectLinea.appendChild(option);
-            }
+        function popolaLinee() {
+            const lineaSel = document.getElementById('linea');
+            lineaSel.innerHTML = '';
+            const linee = Object.keys(prodotti.linee).sort();
+            linee.forEach(linea => {
+                const opt = document.createElement('option');
+                opt.value = linea;
+                opt.innerText = linea;
+                lineaSel.appendChild(opt);
+            });
         }
 
         function startPreventivo() {
-            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
-            const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
-            const fatturazione = document.getElementById('fatturazione').value;
-            const lineaSelezionata = document.getElementById('linea').value;
+            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value.trim();
+            const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value.trim();
+            const fatturazione = document.getElementById('fatturazione').value.trim();
             
             if (!nomePuntoVendita || !indirizzoPuntoVendita || !fatturazione) {
-                alert("Per favore, compila tutti i campi del cliente.");
+                alert("Per favore, compila tutti i campi obbligatori: Nome Punto Vendita, Indirizzo Punto Vendita e Fatturazione.");
                 return;
             }
 
-            // Salva i dati del cliente e la linea corrente
-            currentPreventivo = {
-                cliente: {
-                    nome: nomePuntoVendita,
-                    indirizzo: indirizzoPuntoVendita,
-                    fatturazione: fatturazione
-                },
-                linea: lineaSelezionata,
-                articoli: []
-            };
-
+            currentLinea = document.getElementById('linea').value;
+            mostraProdottiLinea(currentLinea, nomePuntoVendita, indirizzoPuntoVendita, fatturazione);
             document.getElementById('cliente-section').classList.add('hidden');
             document.getElementById('preventivo-section').classList.remove('hidden');
-            generateProductList(lineaSelezionata);
         }
 
-        function generateProductList(linea) {
-            const prodottiListDiv = document.getElementById('prodotti-list');
-            prodottiListDiv.innerHTML = '';
+        function mostraProdottiLinea(linea, nomePuntoVendita, indirizzoPuntoVendita, fatturazione) {
+            const prodottiList = document.getElementById('prodotti-list');
+            prodottiList.innerHTML = `<h3>${linea}</h3>`;
+            prodottiList.innerHTML += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
+            prodottiList.innerHTML += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
+            prodottiList.innerHTML += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
 
-            const categorie = prodotti.linee[linea].categorie;
-            for (const categoria in categorie) {
-                const categoryDiv = document.createElement('div');
-                categoryDiv.classList.add('category');
+            const categorie = Object.keys(prodotti.linee[linea].categorie);
+            categorie.forEach(categoria => {
+                const catDiv = document.createElement('div');
+                catDiv.className = 'category';
+                catDiv.innerHTML = `<strong>${categoria}</strong>`;
                 
-                const h3 = document.createElement('h3');
-                h3.textContent = categoria;
-                categoryDiv.appendChild(h3);
-
-                categorie[categoria].forEach(prodotto => {
+                const prodottiCat = prodotti.linee[linea].categorie[categoria];
+                prodottiCat.forEach(prodotto => {
                     const productItemDiv = document.createElement('div');
-                    productItemDiv.classList.add('product-item');
+                    productItemDiv.className = 'product-item';
+                    
+                    const productDetailsSpan = document.createElement('span');
+                    productDetailsSpan.className = 'product-details';
+                    productDetailsSpan.innerText = `${prodotto.codice} - ${prodotto.descrizione} ${prodotto.colore ? '('+prodotto.colore+')' : ''} - €${prodotto.prezzo.toFixed(2)}`;
+                    
+                    const qtyInput = document.createElement('input');
+                    qtyInput.type = "number";
+                    qtyInput.min = "0";
+                    qtyInput.placeholder = "Quantità";
+                    qtyInput.className = "qty-input";
+                    qtyInput.id = `qty-${prodotto.codice.replace(/[\/\.]/g, '-')}`;
 
-                    const productDetails = document.createElement('div');
-                    productDetails.classList.add('product-details');
-                    productDetails.innerHTML = `
-                        <strong>Codice:</strong> ${prodotto.codice}<br>
-                        <strong>Descrizione:</strong> ${prodotto.descrizione}<br>
-                        <strong>Colore:</strong> ${prodotto.colore}<br>
-                        <strong>Prezzo:</strong> €${prodotto.prezzo.toFixed(2)}
-                    `;
-
-                    const quantityInput = document.createElement('input');
-                    quantityInput.type = 'number';
-                    quantityInput.min = '0';
-                    quantityInput.value = '0';
-                    quantityInput.dataset.codice = prodotto.codice;
-                    quantityInput.dataset.descrizione = prodotto.descrizione;
-                    quantityInput.dataset.prezzo = prodotto.prezzo;
-
-                    productItemDiv.appendChild(productDetails);
-                    productItemDiv.appendChild(quantityInput);
-                    categoryDiv.appendChild(productItemDiv);
+                    productItemDiv.appendChild(productDetailsSpan);
+                    productItemDiv.appendChild(qtyInput);
+                    catDiv.appendChild(productItemDiv);
                 });
-
-                prodottiListDiv.appendChild(categoryDiv);
-            }
+                prodottiList.appendChild(catDiv);
+            });
         }
 
         function aggiungiLinea() {
-            // Salva la linea corrente prima di resettare
-            saveCurrentPreventivo();
+            salvaQuantitaLinea();
             document.getElementById('preventivo-section').classList.add('hidden');
             document.getElementById('cliente-section').classList.remove('hidden');
-            document.getElementById('note').value = ''; // Pulisce le note per la nuova linea
         }
 
-        function saveCurrentPreventivo() {
-            const inputs = document.querySelectorAll('#prodotti-list input[type="number"]');
-            currentPreventivo.articoli = [];
-            inputs.forEach(input => {
-                if (input.value > 0) {
-                    currentPreventivo.articoli.push({
-                        codice: input.dataset.codice,
-                        descrizione: input.dataset.descrizione,
-                        prezzo: parseFloat(input.dataset.prezzo),
-                        quantita: parseInt(input.value)
-                    });
-                }
+        function salvaQuantitaLinea() {
+            const dati = { linea: currentLinea, prodotti: [] };
+            const categorie = Object.keys(prodotti.linee[currentLinea].categorie);
+            categorie.forEach(categoria => {
+                const prodottiCat = prodotti.linee[currentLinea].categorie[categoria];
+                prodottiCat.forEach(prodotto => {
+                    const qtyInput = document.getElementById(`qty-${prodotto.codice.replace(/[\/\.]/g, '-')}`);
+                    const qty = parseInt(qtyInput.value) || 0;
+                    
+                    if (qty > 0) {
+                        dati.prodotti.push({
+                            ...prodotto,
+                            categoria,
+                            quantita: qty
+                        });
+                    }
+                });
             });
-            storicoPreventivo.push(currentPreventivo);
+            if (dati.prodotti.length > 0) preventivo.push(dati);
         }
 
         function mostraAnteprima() {
-            saveCurrentPreventivo(); // Salva anche l'ultima linea prima di mostrare l'anteprima
+            salvaQuantitaLinea();
             document.getElementById('preventivo-section').classList.add('hidden');
             document.getElementById('anteprima-section').classList.remove('hidden');
-            
-            let riepilogoHtml = '';
-            let subtotal = 0;
+            popolaRiepilogo();
+        }
 
-            storicoPreventivo.forEach(preventivo => {
-                // Intestazione per ogni linea di prodotti
-                riepilogoHtml += `<h2>Riepilogo Preventivo per linea: ${preventivo.linea}</h2>`;
-                riepilogoHtml += `<p><strong>Punto Vendita:</strong> ${preventivo.cliente.nome}</p>`;
-                riepilogoHtml += `<p><strong>Indirizzo:</strong> ${preventivo.cliente.indirizzo}</p>`;
-                riepilogoHtml += `<p><strong>Fatturazione:</strong> ${preventivo.cliente.fatturazione}</p>`;
-
-                riepilogoHtml += `<table>`;
-                riepilogoHtml += `
-                    <thead>
-                        <tr>
-                            <th>Codice</th>
-                            <th>Descrizione</th>
-                            <th class="align-right">Prezzo Unitario</th>
-                            <th class="align-right">Quantità</th>
-                            <th class="align-right">Prezzo Totale</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                `;
-
-                preventivo.articoli.forEach(articolo => {
-                    const totalArticolo = articolo.prezzo * articolo.quantita;
-                    subtotal += totalArticolo;
-                    riepilogoHtml += `
-                        <tr>
-                            <td>${articolo.codice}</td>
-                            <td>${articolo.descrizione}</td>
-                            <td class="align-right">€${articolo.prezzo.toFixed(2)}</td>
-                            <td class="align-right">${articolo.quantita}</td>
-                            <td class="align-right">€${totalArticolo.toFixed(2)}</td>
-                        </tr>
-                    `;
-                });
-
-                riepilogoHtml += `</tbody></table>`;
-            });
-
-            // Aggiungi le note al riepilogo
+        function popolaRiepilogo() {
+            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
+            const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
+            const fatturazione = document.getElementById('fatturazione').value;
             const note = document.getElementById('note').value;
-            if (note) {
-                riepilogoHtml += `<div style="margin-top: 20px;">
-                                      <h3>Note:</h3>
-                                      <p>${note.replace(/\n/g, '<br>')}</p>
-                                  </div>`;
-            }
 
-            const vat = subtotal * IVA_RATE;
-            const total = subtotal + vat;
+            let totaleGenerale = 0;
+            const riepilogoConsolidato = {};
 
-            riepilogoHtml += `
-                <table style="margin-top: 20px;">
-                    <tbody>
-                        <tr class="total-row">
-                            <td colspan="4">Totale Imponibile</td>
-                            <td class="align-right">€${subtotal.toFixed(2)}</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td colspan="4">IVA (${(IVA_RATE * 100).toFixed(0)}%)</td>
-                            <td class="align-right">€${vat.toFixed(2)}</td>
-                        </tr>
-                        <tr class="total-row">
-                            <td colspan="4">Totale Finale</td>
-                            <td class="align-right">€${total.toFixed(2)}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            `;
-            
-            document.getElementById('riepilogo').innerHTML = riepilogoHtml;
-        }
-
-        function tornaAllaHome() {
-            document.getElementById('login-section').classList.remove('hidden');
-            document.getElementById('cliente-section').classList.add('hidden');
-            document.getElementById('preventivo-section').classList.add('hidden');
-            document.getElementById('anteprima-section').classList.add('hidden');
-            document.getElementById('conferma-section').classList.add('hidden');
-            // Resetta i campi e lo stato
-            document.getElementById('passwordInput').value = '';
-            document.getElementById('nomePuntoVendita').value = '';
-            document.getElementById('indirizzoPuntoVendita').value = '';
-            document.getElementById('fatturazione').value = '';
-            document.getElementById('note').value = '';
-            storicoPreventivo = [];
-            currentPreventivo = {};
-        }
-
-        function tornaAPreventivo() {
-            document.getElementById('anteprima-section').classList.add('hidden');
-            document.getElementById('preventivo-section').classList.remove('hidden');
-            // Re-popola i campi quantità con i valori salvati
-            const inputs = document.querySelectorAll('#prodotti-list input[type="number"]');
-            inputs.forEach(input => {
-                input.value = 0; // Azzera tutto
-            });
-            
-            storicoPreventivo.forEach(preventivo => {
-                preventivo.articoli.forEach(articolo => {
-                    const input = document.querySelector(`input[data-codice="${articolo.codice}"]`);
-                    if (input) {
-                        input.value = articolo.quantita;
+            preventivo.forEach(lineaPreventivo => {
+                lineaPreventivo.prodotti.forEach(p => {
+                    if (!riepilogoConsolidato[p.codice]) {
+                        riepilogoConsolidato[p.codice] = {
+                            ...p,
+                            quantita: 0,
+                            lineeOrigine: []
+                        };
+                    }
+                    riepilogoConsolidato[p.codice].quantita += p.quantita;
+                    if (!riepilogoConsolidato[p.codice].lineeOrigine.includes(lineaPreventivo.linea)) {
+                        riepilogoConsolidato[p.codice].lineeOrigine.push(lineaPreventivo.linea);
                     }
                 });
             });
 
-            // Rimuove l'ultimo preventivo salvato per poterlo modificare
-            storicoPreventivo.pop();
-            currentPreventivo = {};
+            let html = `<h3>Riepilogo Preventivo</h3>`;
+            html += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
+            html += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
+            html += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
+            
+            // Le note verranno inserite qui, dopo il riepilogo
+            if (note) {
+                html += `<p><strong>Note:</strong> ${note.replace(/\n/g, '<br>')}</p>`;
+            }
+            html += `<hr>`;
+            html += `<p><strong>Linea Prodotto:</strong> ${preventivo.map(l => l.linea).join(', ')}</p>`;
+            html += `<br>`;
+            
+            html += `<table width="100%" border="0" style="text-align:left"><thead><tr>
+                <th>Codice</th><th>Descrizione</th><th>Quantità</th><th class="align-right">Prezzo Unitario</th><th class="align-right">Totale</th></tr></thead><tbody>`;
+
+            Object.values(riepilogoConsolidato).forEach(p => {
+                const totaleRiga = p.quantita * p.prezzo;
+                totaleGenerale += totaleRiga;
+                
+                const lineeOrigine = p.lineeOrigine.length > 1 ? `(${p.lineeOrigine.join(', ')})` : '';
+
+                html += `<tr>
+                    <td>${p.codice}</td>
+                    <td>${p.descrizione} ${lineeOrigine}</td>
+                    <td>${p.quantita}</td>
+                    <td class="align-right">€${p.prezzo.toFixed(2)}</td>
+                    <td class="align-right">€${totaleRiga.toFixed(2)}</td>
+                </tr>`;
+            });
+            
+            html += `</tbody></table>`;
+            
+            const iva = totaleGenerale * IVA_RATE;
+            const totaleConIva = totaleGenerale + iva;
+
+            html += `<br>
+            <p><strong>Subtotale (senza IVA):</strong> <span style="float:right">€${totaleGenerale.toFixed(2)}</span></p>
+            <p><strong>IVA (22%):</strong> <span style="float:right">€${iva.toFixed(2)}</span></p>
+            <h3>Totale Generale: <span style="float:right">€${totaleConIva.toFixed(2)}</span></h3>`;
+            
+            document.getElementById('riepilogo').innerHTML = html;
         }
 
-        function tornaAChoice() {
-            document.getElementById('preventivo-section').classList.add('hidden');
+        function concludiInvio() {
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('conferma-section').classList.remove('hidden');
+            // La variabile preventivo non viene resettata qui, si svuota solo tornando alla home.
+        }
+        
+        function tornaAllaHome() {
+            document.getElementById('conferma-section').classList.add('hidden');
+            document.getElementById('anteprima-section').classList.add('hidden');
             document.getElementById('cliente-section').classList.remove('hidden');
-            document.getElementById('note').value = '';
-            // Resetta lo stato corrente
-            currentPreventivo = {};
+            // Resetta i dati del cliente e il preventivo per una nuova compilazione
+            document.getElementById('nomePuntoVendita').value = '';
+            document.getElementById('indirizzoPuntoVendita').value = '';
+            document.getElementById('fatturazione').value = '';
+            document.getElementById('note').value = ''; // Aggiunto il reset del campo note
+            preventivo = []; 
         }
 
         function stampaPreventivo() {
             window.print();
         }
 
-        function concludiInvio() {
+        function tornaAChoice() {
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
+            preventivo = []; // Resetta il preventivo quando si torna indietro
+        }
+
+        function tornaAPreventivo() {
             document.getElementById('anteprima-section').classList.add('hidden');
-            document.getElementById('conferma-section').classList.remove('hidden');
+            document.getElementById('conferma-section').classList.add('hidden');
+            document.getElementById('preventivo-section').classList.remove('hidden');
+            // Mantiene il preventivo attuale per eventuali modifiche
         }
     </script>
 </body>
