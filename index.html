@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
@@ -56,13 +56,21 @@
             #anteprima-section { display: block !important; }
             h1, h2, h3, p { margin: 5px 0; }
         }
-
+        
         /* Stili per il footer */
         .footer {
             margin-top: 30px;
             text-align: center;
             font-size: 0.75em;
             color: #888;
+        }
+        .note-input-group {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        #note-text-area {
+            flex-grow: 1;
         }
     </style>
 </head>
@@ -120,14 +128,16 @@
             </div>
             <div class="form-group" id="note-section">
                 <label for="note">Note</label>
-                <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
+                <div class="note-input-group">
+                    <textarea id="note-text-area" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
+                    <button onclick="aggiungiNota()">INSERISCI NOTA</button>
+                </div>
             </div>
             <div class="button-group">
-                <button onclick="tornaAllaHome()">Torna alla Home</button>
+                <button onclick="tornaAllaHome()">Nuovo preventivo</button>
                 <button onclick="tornaAPreventivo()">Indietro</button>
                 <div>
                     <button onclick="stampaPreventivo()">Stampa Preventivo</button>
-                    <button onclick="concludiInvio()">Concludi</button>
                 </div>
             </div>
         </div>
@@ -336,61 +346,28 @@
                             { "codice": "4320436/8", "descrizione": "RIPIANO LAMIERA 1330X400 FORATO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 19.47 }
                         ],
                         "PROLUNGHE": [
-                            { "codice": "AS2220C.240", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 240X105 VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 40.40 },
-                            { "codice": "AS2220C", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 45.12 }
+                            { "codice": "AS2220C.240", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 240X105 VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 40.40 },
+                            { "codice": "AS2220C", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 45.12 }
                         ],
                         "SCHIENALI": [
-                            { "codice": "AS1253C.40.750.240", "descrizione": "SCHIENALE DA 750X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 26.40 },
-                            { "codice": "AS1253C.40.1000.240", "descrizione": "SCHIENALE DA 1000X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.47 },
-                            { "codice": "AS1253C.40.1330.240", "descrizione": "SCHIENALE DA 1330X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.20 },
-                            { "codice": "AS1253C.40.750.400", "descrizione": "SCHIENALE DA 750X400 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 21.45 },
-                            { "codice": "AS1253C.40.1000.400", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 17.88 }
+                            { "codice": "AS1253C.40.750.240", "descrizione": "SCHIENALE DA 750X240 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 26.40 },
+                            { "codice": "AS1253C.40.1000.240", "descrizione": "SCHIENALE DA 1000X240 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.47 },
+                            { "codice": "AS1253C.40.1330.240", "descrizione": "SCHIENALE DA 1330X240 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.20 },
+                            { "codice": "AS1253C.40.750.400", "descrizione": "SCHIENALE DA 750X400 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 10.63 },
+                            { "codice": "AS1253C.40.1000.400", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.20 },
+                            { "codice": "AS1253C.40.1330.400", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 12.00 }
                         ],
                         "MENSOLE": [
-                            { "codice": "AS1252C.400", "descrizione": "MENSOLA TIPO SEV BIANCO 3A 1P PASSO 40 P=400 SP.3 MM RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.07 },
-                            { "codice": "AS1252D.400", "descrizione": "COPPIA MENSOLA 400MM PER PIANO IN VETRO SP.7/8MM  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 7.70 }
+                            { "codice": "AS1252C.400", "descrizione": "MENSOLA 400MM VERNICIATA RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.14 }
                         ],
                         "BARRE": [
-                            { "codice": "5007022.SB", "descrizione": "BARRA 1000mm", "colore": "CROMATE", "prezzo": 18.15 },
-                            { "codice": "5007024.SB", "descrizione": "BARRA 1330mm", "colore": "CROMATE", "prezzo": 20.57 }
+                            { "codice": "5007020", "descrizione": "BARRA 750mm", "colore": "CROMATE", "prezzo": 10.68 },
+                            { "codice": "5007022", "descrizione": "BARRA 1000mm", "colore": "CROMATE", "prezzo": 12.90 },
+                            { "codice": "5007024", "descrizione": "BARRA 1330mm", "colore": "CROMATE", "prezzo": 17.25 }
                         ],
                         "GANCI": [
-                            { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
-                        ],
-                        "PORTAPREZZI": [
-                            { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                            { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
-                            { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
-                        ]
-                    }
-                },
-                "SEV G": {
-                    "categorie": {
-                        "RIPIANI DA 40": [
-                            { "codice": "4320234/8.7035", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL 7035", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 25.86 },
-                            { "codice": "4320236/8.7035", "descrizione": "RIPIANO LAMIERA 1330X400 LISCIO VERNICIATO RAL 7035", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 29.76 }
-                        ],
-                        "PROLUNGHE": [
-                            { "codice": "AS2220A.75.250.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250X75 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 40.40 },
-                            { "codice": "AS2220A.250.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250X105 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 40.40 },
-                            { "codice": "AS2220A.75.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X75 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 },
-                            { "codice": "AS2220A.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 }
-                        ],
-                        "SCHIENALI": [
-                            { "codice": "AS1253.S25.750.250.7035", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.50 },
-                            { "codice": "AS1253.S25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.47 },
-                            { "codice": "AS1253.S25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO   RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 }
-                        ],
-                        "MENSOLE": [
-                            { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA  DA 40 VERNICIATO RAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
-                        ],
-                        "BARRE": [
-                            { "codice": "5007022.M", "descrizione": "BARRA 1000mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 18.15 },
-                            { "codice": "5007024.M", "descrizione": "BARRA 1330mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 20.57 }
-                        ],
-                        "GANCI": [
-                            { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
+                            { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 },
+                            { "codice": "5007026.1", "descrizione": "GANCIO DA 30cm diam. 6 mm", "colore": "CROMATI", "prezzo": 2.62 }
                         ],
                         "PORTAPREZZI": [
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
@@ -403,233 +380,232 @@
             }
         };
 
-        let preventivo = [];
-        let currentLinea = null;
+        let preventivoCorrente = [];
+        let datiCliente = {};
 
         function checkLogin() {
-            const pass = document.getElementById('passwordInput').value;
-            if (pass === PASSWORD) {
+            const passwordInput = document.getElementById('passwordInput').value;
+            if (passwordInput === PASSWORD) {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('cliente-section').classList.remove('hidden');
-                popolaLinee();
+                popolaLineeProdotto();
             } else {
                 alert('Password errata!');
             }
         }
-        
+
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('passwordInput');
             const toggleIcon = document.querySelector('.toggle-password');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.textContent = '🙈';
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.textContent = "🙈";
             } else {
-                passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️';
+                passwordInput.type = "password";
+                toggleIcon.textContent = "👁️";
             }
         }
 
-        function popolaLinee() {
-            const lineaSel = document.getElementById('linea');
-            lineaSel.innerHTML = '';
-            const linee = Object.keys(prodotti.linee).sort();
-            linee.forEach(linea => {
-                const opt = document.createElement('option');
-                opt.value = linea;
-                opt.innerText = linea;
-                lineaSel.appendChild(opt);
-            });
+        function popolaLineeProdotto() {
+            const select = document.getElementById('linea');
+            select.innerHTML = '<option value="">Seleziona...</option>';
+            for (const linea in prodotti.linee) {
+                const option = document.createElement('option');
+                option.value = linea;
+                option.textContent = linea;
+                select.appendChild(option);
+            }
         }
 
         function startPreventivo() {
-            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value.trim();
-            const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value.trim();
-            const fatturazione = document.getElementById('fatturazione').value.trim();
-            
-            if (!nomePuntoVendita || !indirizzoPuntoVendita || !fatturazione) {
-                alert("Per favore, compila tutti i campi obbligatori: Nome Punto Vendita, Indirizzo Punto Vendita e Fatturazione.");
-                return;
-            }
-
-            currentLinea = document.getElementById('linea').value;
-            mostraProdottiLinea(currentLinea, nomePuntoVendita, indirizzoPuntoVendita, fatturazione);
-            document.getElementById('cliente-section').classList.add('hidden');
-            document.getElementById('preventivo-section').classList.remove('hidden');
-        }
-
-        function mostraProdottiLinea(linea, nomePuntoVendita, indirizzoPuntoVendita, fatturazione) {
-            const prodottiList = document.getElementById('prodotti-list');
-            prodottiList.innerHTML = `<h3>${linea}</h3>`;
-            prodottiList.innerHTML += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
-            prodottiList.innerHTML += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
-            prodottiList.innerHTML += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
-
-            const categorie = Object.keys(prodotti.linee[linea].categorie);
-            categorie.forEach(categoria => {
-                const catDiv = document.createElement('div');
-                catDiv.className = 'category';
-                catDiv.innerHTML = `<strong>${categoria}</strong>`;
-                
-                const prodottiCat = prodotti.linee[linea].categorie[categoria];
-                prodottiCat.forEach(prodotto => {
-                    const productItemDiv = document.createElement('div');
-                    productItemDiv.className = 'product-item';
-                    
-                    const productDetailsSpan = document.createElement('span');
-                    productDetailsSpan.className = 'product-details';
-                    productDetailsSpan.innerText = `${prodotto.codice} - ${prodotto.descrizione} ${prodotto.colore ? '('+prodotto.colore+')' : ''} - €${prodotto.prezzo.toFixed(2)}`;
-                    
-                    const qtyInput = document.createElement('input');
-                    qtyInput.type = "number";
-                    qtyInput.min = "0";
-                    qtyInput.placeholder = "Quantità";
-                    qtyInput.className = "qty-input";
-                    qtyInput.id = `qty-${prodotto.codice.replace(/[\/\.]/g, '-')}`;
-
-                    productItemDiv.appendChild(productDetailsSpan);
-                    productItemDiv.appendChild(qtyInput);
-                    catDiv.appendChild(productItemDiv);
-                });
-                prodottiList.appendChild(catDiv);
-            });
-        }
-
-        function aggiungiLinea() {
-            salvaQuantitaLinea();
-            document.getElementById('preventivo-section').classList.add('hidden');
-            document.getElementById('cliente-section').classList.remove('hidden');
-        }
-
-        function salvaQuantitaLinea() {
-            const dati = { linea: currentLinea, prodotti: [] };
-            const categorie = Object.keys(prodotti.linee[currentLinea].categorie);
-            categorie.forEach(categoria => {
-                const prodottiCat = prodotti.linee[currentLinea].categorie[categoria];
-                prodottiCat.forEach(prodotto => {
-                    const qtyInput = document.getElementById(`qty-${prodotto.codice.replace(/[\/\.]/g, '-')}`);
-                    const qty = parseInt(qtyInput.value) || 0;
-                    
-                    if (qty > 0) {
-                        dati.prodotti.push({
-                            ...prodotto,
-                            categoria,
-                            quantita: qty
-                        });
-                    }
-                });
-            });
-            if (dati.prodotti.length > 0) preventivo.push(dati);
-        }
-
-        function mostraAnteprima() {
-            salvaQuantitaLinea();
-            document.getElementById('preventivo-section').classList.add('hidden');
-            document.getElementById('anteprima-section').classList.remove('hidden');
-            popolaRiepilogo();
-        }
-
-        function popolaRiepilogo() {
             const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
             const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
             const fatturazione = document.getElementById('fatturazione').value;
-            const note = document.getElementById('note').value;
+            const linea = document.getElementById('linea').value;
 
-            let totaleGenerale = 0;
-            const riepilogoConsolidato = {};
-
-            preventivo.forEach(lineaPreventivo => {
-                lineaPreventivo.prodotti.forEach(p => {
-                    if (!riepilogoConsolidato[p.codice]) {
-                        riepilogoConsolidato[p.codice] = {
-                            ...p,
-                            quantita: 0,
-                            lineeOrigine: []
-                        };
-                    }
-                    riepilogoConsolidato[p.codice].quantita += p.quantita;
-                    if (!riepilogoConsolidato[p.codice].lineeOrigine.includes(lineaPreventivo.linea)) {
-                        riepilogoConsolidato[p.codice].lineeOrigine.push(lineaPreventivo.linea);
-                    }
-                });
-            });
-
-            let html = `<h3>Riepilogo Preventivo</h3>`;
-            html += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
-            html += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
-            html += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
-            
-            // Le note verranno inserite qui, dopo il riepilogo
-            if (note) {
-                html += `<p><strong>Note:</strong> ${note.replace(/\n/g, '<br>')}</p>`;
+            if (nomePuntoVendita && indirizzoPuntoVendita && fatturazione && linea) {
+                datiCliente = { nomePuntoVendita, indirizzoPuntoVendita, fatturazione };
+                preventivoCorrente = [{ linea: linea, items: [] }];
+                document.getElementById('cliente-section').classList.add('hidden');
+                document.getElementById('preventivo-section').classList.remove('hidden');
+                popolaProdotti();
+            } else {
+                alert('Per favore, compila tutti i campi del cliente.');
             }
-            html += `<hr>`;
-            html += `<p><strong>Linea Prodotto:</strong> ${preventivo.map(l => l.linea).join(', ')}</p>`;
-            html += `<br>`;
-            
-            html += `<table width="100%" border="0" style="text-align:left"><thead><tr>
-                <th>Codice</th><th>Descrizione</th><th>Quantità</th><th class="align-right">Prezzo Unitario</th><th class="align-right">Totale</th></tr></thead><tbody>`;
+        }
 
-            Object.values(riepilogoConsolidato).forEach(p => {
-                const totaleRiga = p.quantita * p.prezzo;
-                totaleGenerale += totaleRiga;
+        function popolaProdotti() {
+            const listaProdottiDiv = document.getElementById('prodotti-list');
+            listaProdottiDiv.innerHTML = '';
+            
+            preventivoCorrente.forEach((preventivo, lineaIndex) => {
+                const lineaNome = preventivo.linea;
+                const lineaProdotti = prodotti.linee[lineaNome].categorie;
+                const containerLinea = document.createElement('div');
+                containerLinea.classList.add('category');
+                containerLinea.innerHTML = `<h3>Linea: ${lineaNome}</h3>`;
                 
-                const lineeOrigine = p.lineeOrigine.length > 1 ? `(${p.lineeOrigine.join(', ')})` : '';
-
-                html += `<tr>
-                    <td>${p.codice}</td>
-                    <td>${p.descrizione} ${lineeOrigine}</td>
-                    <td>${p.quantita}</td>
-                    <td class="align-right">€${p.prezzo.toFixed(2)}</td>
-                    <td class="align-right">€${totaleRiga.toFixed(2)}</td>
-                </tr>`;
+                for (const categoria in lineaProdotti) {
+                    const containerCategoria = document.createElement('div');
+                    containerCategoria.innerHTML = `<h4>${categoria}</h4>`;
+                    
+                    lineaProdotti[categoria].forEach((prodotto, prodottoIndex) => {
+                        const productItem = document.createElement('div');
+                        productItem.classList.add('product-item');
+                        productItem.innerHTML = `
+                            <div class="product-details">
+                                <strong>${prodotto.codice}</strong> - ${prodotto.descrizione} - Colore: ${prodotto.colore} - Prezzo: €${prodotto.prezzo.toFixed(2)}
+                            </div>
+                            <input type="number" min="0" value="0" id="qty-${lineaIndex}-${categoria}-${prodottoIndex}">
+                        `;
+                        containerCategoria.appendChild(productItem);
+                    });
+                    containerLinea.appendChild(containerCategoria);
+                }
+                listaProdottiDiv.appendChild(containerLinea);
             });
-            
-            html += `</tbody></table>`;
-            
-            const iva = totaleGenerale * IVA_RATE;
-            const totaleConIva = totaleGenerale + iva;
-
-            html += `<br>
-            <p><strong>Subtotale (senza IVA):</strong> <span style="float:right">€${totaleGenerale.toFixed(2)}</span></p>
-            <p><strong>IVA (22%):</strong> <span style="float:right">€${iva.toFixed(2)}</span></p>
-            <h3>Totale Generale: <span style="float:right">€${totaleConIva.toFixed(2)}</span></h3>`;
-            
-            document.getElementById('riepilogo').innerHTML = html;
-        }
-
-        function concludiInvio() {
-            document.getElementById('anteprima-section').classList.add('hidden');
-            document.getElementById('conferma-section').classList.remove('hidden');
-            // La variabile preventivo non viene resettata qui, si svuota solo tornando alla home.
-        }
-        
-        function tornaAllaHome() {
-            document.getElementById('conferma-section').classList.add('hidden');
-            document.getElementById('anteprima-section').classList.add('hidden');
-            document.getElementById('cliente-section').classList.remove('hidden');
-            // Resetta i dati del cliente e il preventivo per una nuova compilazione
-            document.getElementById('nomePuntoVendita').value = '';
-            document.getElementById('indirizzoPuntoVendita').value = '';
-            document.getElementById('fatturazione').value = '';
-            document.getElementById('note').value = ''; // Aggiunto il reset del campo note
-            preventivo = []; 
-        }
-
-        function stampaPreventivo() {
-            window.print();
         }
 
         function tornaAChoice() {
             document.getElementById('preventivo-section').classList.add('hidden');
             document.getElementById('cliente-section').classList.remove('hidden');
-            preventivo = []; // Resetta il preventivo quando si torna indietro
+        }
+
+        function aggiungiLinea() {
+            const nuovaLinea = document.getElementById('linea').value;
+            if (nuovaLinea && !preventivoCorrente.some(p => p.linea === nuovaLinea)) {
+                preventivoCorrente.push({ linea: nuovaLinea, items: [] });
+                popolaProdotti();
+            } else {
+                alert('Seleziona una linea diversa o una linea già esistente.');
+            }
+        }
+
+        function mostraAnteprima() {
+            preventivoCorrente.forEach((preventivo, lineaIndex) => {
+                preventivo.items = [];
+                const lineaProdotti = prodotti.linee[preventivo.linea].categorie;
+                for (const categoria in lineaProdotti) {
+                    lineaProdotti[categoria].forEach((prodotto, prodottoIndex) => {
+                        const qty = document.getElementById(`qty-${lineaIndex}-${categoria}-${prodottoIndex}`).value;
+                        if (qty > 0) {
+                            preventivo.items.push({ ...prodotto, quantita: parseInt(qty) });
+                        }
+                    });
+                }
+            });
+
+            generaRiepilogo();
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('anteprima-section').classList.remove('hidden');
+        }
+        
+        function aggiungiNota() {
+            const riepilogoDiv = document.getElementById('riepilogo');
+            const noteText = document.getElementById('note-text-area').value;
+            const noteSection = document.getElementById('note-aggiunte');
+
+            if (noteText.trim() === "") {
+                alert("Inserisci una nota prima di aggiungerla.");
+                return;
+            }
+            
+            if (!noteSection) {
+                const newNoteSection = document.createElement('div');
+                newNoteSection.id = 'note-aggiunte';
+                newNoteSection.innerHTML = '<h3 style="margin-top: 20px;">Note Aggiuntive:</h3>';
+                riepilogoDiv.appendChild(newNoteSection);
+            }
+            
+            const p = document.createElement('p');
+            p.textContent = `• ${noteText}`;
+            document.getElementById('note-aggiunte').appendChild(p);
+
+            document.getElementById('note-text-area').value = ""; // Pulisce il campo dopo l'inserimento
+        }
+
+        function generaRiepilogo() {
+            const riepilogoDiv = document.getElementById('riepilogo');
+            riepilogoDiv.innerHTML = '';
+            
+            let html = `<h2>Riepilogo Preventivo</h2>
+                        <p><strong>Punto Vendita:</strong> ${datiCliente.nomePuntoVendita}</p>
+                        <p><strong>Indirizzo:</strong> ${datiCliente.indirizzoPuntoVendita}</p>
+                        <p><strong>Fatturazione:</strong> ${datiCliente.fatturazione}</p>
+                        <hr>`;
+
+            let totalePreventivo = 0;
+
+            preventivoCorrente.forEach(preventivo => {
+                if (preventivo.items.length > 0) {
+                    html += `<h3>Linea Prodotti: ${preventivo.linea}</h3>`;
+                    html += `<table>
+                                <thead>
+                                    <tr>
+                                        <th>Codice</th>
+                                        <th>Descrizione</th>
+                                        <th>Quantità</th>
+                                        <th class="align-right">Prezzo Unitario</th>
+                                        <th class="align-right">Totale</th>
+                                    </tr>
+                                </thead>
+                                <tbody>`;
+                    
+                    let totaleLinea = 0;
+                    preventivo.items.forEach(item => {
+                        const totaleItem = item.prezzo * item.quantita;
+                        totaleLinea += totaleItem;
+                        html += `<tr>
+                                    <td>${item.codice}</td>
+                                    <td>${item.descrizione}</td>
+                                    <td>${item.quantita}</td>
+                                    <td class="align-right">€${item.prezzo.toFixed(2)}</td>
+                                    <td class="align-right">€${totaleItem.toFixed(2)}</td>
+                                 </tr>`;
+                    });
+
+                    totalePreventivo += totaleLinea;
+                    html += `<tr class="total-row">
+                                <td colspan="4">Totale Linea (${preventivo.linea})</td>
+                                <td class="align-right">€${totaleLinea.toFixed(2)}</td>
+                             </tr></tbody></table>`;
+                }
+            });
+
+            const totaleIVA = totalePreventivo * IVA_RATE;
+            const totaleConIVA = totalePreventivo + totaleIVA;
+
+            html += `<div style="margin-top: 20px;">
+                        <p><strong>Totale Merce:</strong> <span class="align-right">€${totalePreventivo.toFixed(2)}</span></p>
+                        <p><strong>IVA (${(IVA_RATE * 100)}%):</strong> <span class="align-right">€${totaleIVA.toFixed(2)}</span></p>
+                        <p><strong>TOTALE PREVENTIVO CON IVA:</strong> <span class="align-right">€${totaleConIVA.toFixed(2)}</span></p>
+                     </div>`;
+            riepilogoDiv.innerHTML = html;
         }
 
         function tornaAPreventivo() {
             document.getElementById('anteprima-section').classList.add('hidden');
-            document.getElementById('conferma-section').classList.add('hidden');
             document.getElementById('preventivo-section').classList.remove('hidden');
-            // Mantiene il preventivo attuale per eventuali modifiche
+        }
+
+        function stampaPreventivo() {
+            window.print();
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('conferma-section').classList.remove('hidden');
+        }
+
+        function tornaAllaHome() {
+            document.getElementById('conferma-section').classList.add('hidden');
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            // Reset dei campi
+            document.getElementById('passwordInput').value = "";
+            document.getElementById('nomePuntoVendita').value = "";
+            document.getElementById('indirizzoPuntoVendita').value = "";
+            document.getElementById('fatturazione').value = "";
+            document.getElementById('linea').value = "";
+            document.getElementById('riepilogo').innerHTML = "";
+            document.getElementById('note-text-area').value = "";
         }
     </script>
 </body>
