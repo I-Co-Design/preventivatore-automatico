@@ -16,15 +16,17 @@
         button:disabled { background: #ccc; cursor: not-allowed; }
         .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
         .product-item { display: flex; align-items: center; margin-bottom: 8px; }
-        .product-details { flex-grow: 1; font-size: 0.9em; }
+        .product-details { flex-grow: 1; font-size: 0.8em; } /* Caratteri più piccoli per i prodotti */
         .product-item input[type="number"] { width: 80px; margin-left: 10px; }
         .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
         .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
+        .button-group { display: flex; justify-content: space-between; margin-top: 20px; }
+        .preview table td, .preview table th { font-size: 0.8em; } /* Caratteri più piccoli nella tabella di anteprima */
     </style>
 </head>
 <body>
     <div class="container">
-        <img src="https://www.pasolini.it/wp-content/uploads/2020/04/logo-pasolini.png" class="logo" alt="PASOLINI Logo">
+        <img src="LOGO PASOLINI CC.jpg" class="logo" alt="PASOLINI Logo">
         <h1>PREVENTIVATORE AUTOMATICO<br>PROGETTO PROLUNGHE</h1>
 
         <div id="login-section">
@@ -53,8 +55,13 @@
 
         <div id="preventivo-section" class="hidden">
             <div id="prodotti-list"></div>
-            <button onclick="aggiungiLinea()">Aggiungi un’altra linea prodotto</button>
-            <button onclick="mostraAnteprima()">Concludi preventivo</button>
+            <div class="button-group">
+                <button onclick="tornaAChoice()">Indietro</button>
+                <div>
+                    <button onclick="aggiungiLinea()">Aggiungi un’altra linea prodotto</button>
+                    <button onclick="mostraAnteprima()">Concludi preventivo</button>
+                </div>
+            </div>
         </div>
 
         <div id="anteprima-section" class="hidden">
@@ -63,12 +70,18 @@
                 <label for="emailCliente">Inserisci la tua email</label>
                 <input type="email" id="emailCliente" required>
             </div>
-            <button onclick="inviaPreventivo()">Invia preventivo</button>
-            <button onclick="stampaPreventivo()">Stampa Preventivo</button>
+            <div class="button-group">
+                <button onclick="tornaAPreventivo()">Indietro</button>
+                <div>
+                    <button onclick="stampaPreventivo()">Stampa Preventivo</button>
+                    <button onclick="inviaPreventivo()">Invia preventivo</button>
+                </div>
+            </div>
         </div>
 
         <div id="conferma-section" class="hidden">
             <div class="success">Preventivo inviato con successo. Grazie!</div>
+            <button onclick="tornaAPreventivo()">Torna all'elenco prodotti</button>
         </div>
     </div>
 
@@ -288,7 +301,7 @@
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
                             { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
                             { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
+                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
                         ]
                     }
                 },
@@ -323,7 +336,7 @@
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
                             { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
                             { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
+                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
                         ]
                     }
                 }
@@ -477,6 +490,19 @@
 
         function stampaPreventivo() {
             window.print();
+        }
+
+        function tornaAChoice() {
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
+            preventivo = []; // Resetta il preventivo quando si torna indietro
+        }
+
+        function tornaAPreventivo() {
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('conferma-section').classList.add('hidden');
+            document.getElementById('preventivo-section').classList.remove('hidden');
+            // Mantiene il preventivo attuale per eventuali modifiche
         }
     </script>
 </body>
