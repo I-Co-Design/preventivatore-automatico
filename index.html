@@ -11,10 +11,13 @@
         .hidden { display: none; }
         .form-group { margin-bottom: 18px; }
         label { font-weight: bold; display: block; margin-bottom: 6px; }
-        input, select { width: 100%; padding: 8px; }
+        input[type="text"], input[type="email"], input[type="password"], select { width: 100%; padding: 8px; }
         button { background: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; }
         button:disabled { background: #ccc; cursor: not-allowed; }
         .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
+        .product-item { display: flex; align-items: center; margin-bottom: 8px; }
+        .product-details { flex-grow: 1; }
+        .product-item input[type="number"] { width: 80px; margin-left: 10px; }
         .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
         .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
     </style>
@@ -366,27 +369,28 @@
             categorie.forEach(categoria => {
                 const catDiv = document.createElement('div');
                 catDiv.className = 'category';
-                const select = document.createElement('select');
-                select.id = `select-${categoria.replace(/\s/g, '-')}`;
+                catDiv.innerHTML = `<strong>${categoria}</strong>`;
                 
-                const defaultOption = document.createElement('option');
-                defaultOption.value = "";
-                defaultOption.innerText = `Seleziona ${categoria}...`;
-                select.appendChild(defaultOption);
-
                 const prodottiCat = prodotti.linee[linea].categorie[categoria];
                 prodottiCat.forEach(prodotto => {
-                    const opt = document.createElement('option');
-                    opt.value = prodotto.codice;
-                    opt.innerText = `${prodotto.codice} - ${prodotto.descrizione} ${prodotto.colore ? '('+prodotto.colore+')' : ''} - €${prodotto.prezzo.toFixed(2)}`;
-                    select.appendChild(opt);
+                    const productItemDiv = document.createElement('div');
+                    productItemDiv.className = 'product-item';
+                    
+                    const productDetailsSpan = document.createElement('span');
+                    productDetailsSpan.className = 'product-details';
+                    productDetailsSpan.innerText = `${prodotto.codice} - ${prodotto.descrizione} ${prodotto.colore ? '('+prodotto.colore+')' : ''} - €${prodotto.prezzo.toFixed(2)}`;
+                    
+                    const qtyInput = document.createElement('input');
+                    qtyInput.type = "number";
+                    qtyInput.min = "0";
+                    qtyInput.placeholder = "Quantità";
+                    qtyInput.className = "qty-input";
+                    qtyInput.id = `qty-${prodotto.codice.replace(/[\/\.]/g, '-')}`;
+
+                    productItemDiv.appendChild(productDetailsSpan);
+                    productItemDiv.appendChild(qtyInput);
+                    catDiv.appendChild(productItemDiv);
                 });
-                
-                catDiv.innerHTML = `<strong>${categoria}</strong>`;
-                catDiv.appendChild(select);
-                catDiv.innerHTML += `
-                    <input type="number" min="0" placeholder="Quantità" class="qty-input" id="qty-${categoria.replace(/\s/g, '-')}" style="width: auto; margin-left: 10px;">
-                `;
                 prodottiList.appendChild(catDiv);
             });
         }
@@ -401,20 +405,19 @@
             const dati = { linea: currentLinea, prodotti: [] };
             const categorie = Object.keys(prodotti.linee[currentLinea].categorie);
             categorie.forEach(categoria => {
-                const select = document.getElementById(`select-${categoria.replace(/\s/g, '-')}`);
-                const codice = select.value;
-                const qty = parseInt(document.getElementById(`qty-${categoria.replace(/\s/g, '-')}`).value) || 0;
-                
-                if (codice && qty > 0) {
-                    const prodotto = prodotti.linee[currentLinea].categorie[categoria].find(p => p.codice === codice);
-                    if (prodotto) {
+                const prodottiCat = prodotti.linee[currentLinea].categorie[categoria];
+                prodottiCat.forEach(prodotto => {
+                    const qtyInput = document.getElementById(`qty-${prodotto.codice.replace(/[\/\.]/g, '-')}`);
+                    const qty = parseInt(qtyInput.value) || 0;
+                    
+                    if (qty > 0) {
                         dati.prodotti.push({
                             ...prodotto,
                             categoria,
                             quantita: qty
                         });
                     }
-                }
+                });
             });
             if (dati.prodotti.length > 0) preventivo.push(dati);
         }
