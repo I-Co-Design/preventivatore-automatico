@@ -140,7 +140,7 @@
             <div class="button-group">
                 <button onclick="tornaAChoice()">Indietro</button>
                 <div>
-                    <button onclick="aggiungiLinea()">Aggiungi un’altra linea prodotto</button>
+                    <button onclick="salvaEPassaAllaSelezioneLinea()">Aggiungi un’altra linea prodotto</button>
                     <button onclick="mostraAnteprima()">Concludi preventivo</button>
                 </div>
             </div>
@@ -160,7 +160,7 @@
                 </div>
             </div>
             <div class="button-group">
-                <button onclick="tornaAllaHome()">Torna alla Home</button>
+                <button onclick="nuovoPreventivo()">Nuovo Preventivo per altro negozio</button>
                 <button onclick="tornaAPreventivo()">Indietro</button>
                 <div>
                     <button onclick="stampaPreventivo()">Stampa Preventivo</button>
@@ -171,7 +171,7 @@
         <div id="conferma-section" class="hidden">
             <div class="success">Preventivo salvato e stampato.
                 Si prega di inviarlo manualmente.</div>
-            <button onclick="tornaAllaHome()">Nuovo preventivo</button>
+            <button onclick="nuovoPreventivo()">Nuovo Preventivo per altro negozio</button>
         </div>
     </div>
 
@@ -365,6 +365,7 @@
 
         // Dati salvati
         let preventiviSalvati = [];
+        let notePreventivo = '';
 
         // Funzioni
         function checkLogin() {
@@ -400,46 +401,70 @@
 
         function startPreventivo() {
             const lineaSelezionata = document.getElementById('linea').value;
-            if (lineaSelezionata) {
-                document.getElementById('cliente-section').classList.add('hidden');
-                document.getElementById('preventivo-section').classList.remove('hidden');
-                aggiungiLinea();
-            } else {
+            if (!lineaSelezionata) {
                 alert("Seleziona una linea di prodotto per iniziare.");
+                return;
             }
+            
+            document.getElementById('cliente-section').classList.add('hidden');
+            document.getElementById('preventivo-section').classList.remove('hidden');
+            aggiungiLinea(lineaSelezionata);
         }
 
-        function aggiungiLinea() {
-            const lineaSelezionata = document.getElementById('linea').value;
-            if (!lineaSelezionata) return;
-
+        function aggiungiLinea(linea) {
             const prodottiList = document.getElementById('prodotti-list');
+            const existingCategory = document.getElementById(`linea-${linea}`);
+            
+            if (existingCategory) {
+                alert(`La linea prodotto "${linea}" è già stata aggiunta.`);
+                return;
+            }
+
             const newCategoryDiv = document.createElement('div');
             newCategoryDiv.classList.add('category');
+            newCategoryDiv.id = `linea-${linea}`;
 
             const h3 = document.createElement('h3');
-            h3.textContent = `Linea: ${lineaSelezionata}`;
+            h3.textContent = `Linea: ${linea}`;
             newCategoryDiv.appendChild(h3);
 
-            for (const categoria in prodotti.linee[lineaSelezionata].categorie) {
+            for (const categoria in prodotti.linee[linea].categorie) {
                 const h4 = document.createElement('h4');
                 h4.textContent = categoria;
                 newCategoryDiv.appendChild(h4);
 
-                prodotti.linee[lineaSelezionata].categorie[categoria].forEach(prodotto => {
+                prodotti.linee[linea].categorie[categoria].forEach(prodotto => {
                     const productItem = document.createElement('div');
                     productItem.classList.add('product-item');
                     productItem.innerHTML = `
                         <div class="product-details">
                             <strong>${prodotto.codice}</strong> - ${prodotto.descrizione} (${prodotto.colore}) - € ${prodotto.prezzo.toFixed(2)}
                         </div>
-                        <input type="number" class="quantita" data-codice="${prodotto.codice}" data-prezzo="${prodotto.prezzo}" min="0" value="0">
+                        <input type="number" class="quantita" data-codice="${prodotto.codice}" data-prezzo="${prodotto.prezzo}" data-linea="${linea}" min="0" value="0">
                     `;
                     newCategoryDiv.appendChild(productItem);
                 });
             }
-
             prodottiList.appendChild(newCategoryDiv);
+        }
+        
+        function salvaEPassaAllaSelezioneLinea() {
+            // Re-popola i campi quantità con i valori salvati prima di reindirizzare
+            const inputs = document.querySelectorAll('.quantita');
+            const nuovaLinea = document.getElementById('linea').value;
+
+            // Rimuovo la linea corrente dal menu a tendina per non poterla aggiungere due volte
+            const selectLinea = document.getElementById('linea');
+            for(let i = 0; i < selectLinea.options.length; i++){
+                if(selectLinea.options[i].value === nuovaLinea){
+                    selectLinea.options[i].disabled = true;
+                    selectLinea.options[i].classList.add('hidden');
+                }
+            }
+            selectLinea.value = '';
+
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
         }
 
         function mostraAnteprima() {
@@ -456,67 +481,60 @@
             riepilogoDiv.innerHTML += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
             riepilogoDiv.innerHTML += `<hr>`;
 
-            let totaliPerLinea = {};
-            const categorie = document.querySelectorAll('.category');
-            
-            categorie.forEach(categoriaDiv => {
-                const linea = categoriaDiv.querySelector('h3').textContent.split(': ')[1];
-                let subTotaleLinea = 0;
+            const tuttiIProdotti = {};
+            const inputs = document.querySelectorAll('.quantita');
 
-                const prodottiAcquistati = Array.from(categoriaDiv.querySelectorAll('.quantita'))
-                    .filter(input => parseInt(input.value) > 0)
-                    .map(input => {
-                        const quantita = parseInt(input.value);
-                        const prezzo = parseFloat(input.dataset.prezzo);
-                        const codice = input.dataset.codice;
-                        const prodotto = getProdottoByCodice(codice);
-                        const totale = quantita * prezzo;
-                        subTotaleLinea += totale;
-                        return { prodotto, quantita, totale };
-                    });
-
-                if (prodottiAcquistati.length > 0) {
-                    riepilogoDiv.innerHTML += `<h3>Linea Prodotto: ${linea}</h3>`;
-                    riepilogoDiv.innerHTML += `
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Codice</th>
-                                    <th>Descrizione</th>
-                                    <th>Prezzo Unitario</th>
-                                    <th>Quantità</th>
-                                    <th class="align-right">Totale</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${prodottiAcquistati.map(item => `
-                                    <tr>
-                                        <td>${item.prodotto.codice}</td>
-                                        <td>${item.prodotto.descrizione}</td>
-                                        <td>€ ${item.prodotto.prezzo.toFixed(2)}</td>
-                                        <td>${item.quantita}</td>
-                                        <td class="align-right">€ ${item.totale.toFixed(2)}</td>
-                                    </tr>
-                                `).join('')}
-                                <tr class="total-row">
-                                    <td colspan="4">Subtotale Linea</td>
-                                    <td class="align-right">€ ${subTotaleLinea.toFixed(2)}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    `;
-                }
-
-                if (subTotaleLinea > 0) {
-                    totaliPerLinea[linea] = subTotaleLinea;
+            inputs.forEach(input => {
+                const quantita = parseInt(input.value);
+                if (quantita > 0) {
+                    const codice = input.dataset.codice;
+                    const linea = input.dataset.linea;
+                    const prodottoInfo = getProdottoByCodice(codice);
+                    if (!tuttiIProdotti[codice]) {
+                        tuttiIProdotti[codice] = {
+                            ...prodottoInfo,
+                            quantitaTotale: 0,
+                            linee: new Set()
+                        };
+                    }
+                    tuttiIProdotti[codice].quantitaTotale += quantita;
+                    tuttiIProdotti[codice].linee.add(linea);
                 }
             });
 
-            if (Object.keys(totaliPerLinea).length > 0) {
+            if (Object.keys(tuttiIProdotti).length > 0) {
                 let totalePreventivo = 0;
-                for (const linea in totaliPerLinea) {
-                    totalePreventivo += totaliPerLinea[linea];
-                }
+                riepilogoDiv.innerHTML += `<h3>Dettaglio Prodotti</h3>`;
+                riepilogoDiv.innerHTML += `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Codice</th>
+                                <th>Descrizione (Linee)</th>
+                                <th>Prezzo Unitario</th>
+                                <th>Quantità</th>
+                                <th class="align-right">Totale</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${Object.values(tuttiIProdotti).map(item => {
+                                const totaleArticolo = item.prezzo * item.quantitaTotale;
+                                totalePreventivo += totaleArticolo;
+                                const lineeString = Array.from(item.linee).join(', ');
+                                return `
+                                    <tr>
+                                        <td>${item.codice}</td>
+                                        <td>${item.descrizione} (${lineeString})</td>
+                                        <td>€ ${item.prezzo.toFixed(2)}</td>
+                                        <td>${item.quantitaTotale}</td>
+                                        <td class="align-right">€ ${totaleArticolo.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+
                 const iva = totalePreventivo * IVA_RATE;
                 const totaleFinale = totalePreventivo + iva;
 
@@ -541,20 +559,19 @@
                 riepilogoDiv.innerHTML += "<p>Nessun prodotto selezionato.</p>";
             }
 
+            if (notePreventivo) {
+                riepilogoDiv.innerHTML += `<hr><h3>Note:</h3><p>${notePreventivo.replace(/\n/g, '<br>')}</p>`;
+            }
+
             document.getElementById('preventivo-section').classList.add('hidden');
             document.getElementById('anteprima-section').classList.remove('hidden');
         }
 
         function inserisciNotaNelRiepilogo() {
             const noteTextarea = document.getElementById('note');
-            const riepilogoDiv = document.getElementById('riepilogo');
             const nota = noteTextarea.value.trim();
-
-            if (nota) {
-                // Aggiungo la nota formattata al riepilogo
-                riepilogoDiv.innerHTML += `<hr><h3>Note:</h3><p>${nota.replace(/\n/g, '<br>')}</p>`;
-                noteTextarea.value = ''; // Pulisco la textarea dopo aver inserito la nota
-            }
+            notePreventivo = nota;
+            mostraAnteprima(); // Ricarico l'anteprima per includere la nota
         }
 
         function getProdottoByCodice(codice) {
@@ -573,13 +590,38 @@
             window.print();
         }
 
-        function tornaAllaHome() {
-            window.location.reload();
+        function nuovoPreventivo() {
+            // Resetta i campi e lo stato senza fare il reload
+            document.getElementById('nomePuntoVendita').value = '';
+            document.getElementById('indirizzoPuntoVendita').value = '';
+            document.getElementById('fatturazione').value = '';
+            document.getElementById('linea').value = '';
+            document.getElementById('prodotti-list').innerHTML = '';
+            document.getElementById('note').value = '';
+            notePreventivo = '';
+
+            // Riabilita tutte le opzioni
+            const selectLinea = document.getElementById('linea');
+            for(let i = 0; i < selectLinea.options.length; i++){
+                selectLinea.options[i].disabled = false;
+                selectLinea.options[i].classList.remove('hidden');
+            }
+
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('conferma-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
         }
 
         function tornaAPreventivo() {
             document.getElementById('anteprima-section').classList.add('hidden');
             document.getElementById('preventivo-section').classList.remove('hidden');
+        }
+
+        function tornaAChoice() {
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
         }
     </script>
 </body>
