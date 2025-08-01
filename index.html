@@ -88,6 +88,7 @@
     <script>
         // Password di accesso
         const PASSWORD = "PASOLINI2025";
+        const IVA_RATE = 0.22; // 22%
 
         // Database dei prodotti con i dati forniti
         const prodotti = {
@@ -167,7 +168,7 @@
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
                             { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
                             { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
+                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
                         ]
                     }
                 },
@@ -262,7 +263,7 @@
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
                             { "codice": "MPS.42.0660.BL", "descrizione": "PORTASCANNER 660mm", "colore": "BLU", "prezzo": 1.91 },
                             { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm", "colore": "BLU", "prezzo": 2.71 }
+                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
                         ]
                     }
                 },
@@ -372,14 +373,19 @@
 
         function startPreventivo() {
             currentLinea = document.getElementById('linea').value;
-            mostraProdottiLinea(currentLinea);
+            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
+            const fatturazione = document.getElementById('fatturazione').value;
+            mostraProdottiLinea(currentLinea, nomePuntoVendita, fatturazione);
             document.getElementById('cliente-section').classList.add('hidden');
             document.getElementById('preventivo-section').classList.remove('hidden');
         }
 
-        function mostraProdottiLinea(linea) {
+        function mostraProdottiLinea(linea, nomePuntoVendita, fatturazione) {
             const prodottiList = document.getElementById('prodotti-list');
             prodottiList.innerHTML = `<h3>${linea}</h3>`;
+            prodottiList.innerHTML += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
+            prodottiList.innerHTML += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
+
             const categorie = Object.keys(prodotti.linee[linea].categorie);
             categorie.forEach(categoria => {
                 const catDiv = document.createElement('div');
@@ -453,9 +459,11 @@
                 }
                 riepilogo[p.codice].quantita += p.quantita;
             });
+
+            let totaleGenerale = 0;
             let html = `<h3>Riepilogo Preventivo</h3><table width="100%" border="0" style="text-align:left"><tr>
                 <th>Codice</th><th>Descrizione</th><th>Categoria</th><th>Colore</th><th>Quantità</th><th>Prezzo Unitario</th><th>Totale</th></tr>`;
-            let totaleGenerale = 0;
+
             Object.values(riepilogo).forEach(p => {
                 const totaleRiga = p.quantita * p.prezzo;
                 totaleGenerale += totaleRiga;
@@ -469,8 +477,16 @@
                     <td>€${totaleRiga.toFixed(2)}</td>
                 </tr>`;
             });
-            html += '</table>';
-            html += '<h3>Totale Generale: €' + totaleGenerale.toFixed(2) + '</h3>';
+            
+            const iva = totaleGenerale * IVA_RATE;
+            const totaleConIva = totaleGenerale + iva;
+
+            html += `</table>
+            <br>
+            <p><strong>Subtotale (senza IVA):</strong> €${totaleGenerale.toFixed(2)}</p>
+            <p><strong>IVA (22%):</strong> €${iva.toFixed(2)}</p>
+            <h3>Totale Generale: €${totaleConIva.toFixed(2)}</h3>`;
+            
             document.getElementById('riepilogo').innerHTML = html;
         }
 
