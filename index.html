@@ -1,355 +1,237 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Preventivatore Dinamico</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      background: #f7f9fb;
-      font-family: 'Roboto', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-    }
-    .container {
-      max-width: 600px;
-      margin: 40px auto 40px auto;
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 8px 32px rgba(60,90,150,0.14);
-      padding: 32px 24px 24px 24px;
-      display: none;
-    }
-    .logo {
-      display: block;
-      margin: 0 auto 18px auto;
-      max-width: 180px;
-    }
-    h1 {
-      text-align: center;
-      font-size: 2.1em;
-      font-weight: 700;
-      color: #234078;
-      margin-bottom: 18px;
-    }
-    .dati-cliente {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 22px;
-    }
-    .dati-cliente label {
-      font-weight: 500;
-      color: #234078;
-      margin-bottom: 4px;
-    }
-    input[type='text'] {
-      padding: 10px;
-      border: 1px solid #c8d1e1;
-      border-radius: 8px;
-      font-size: 1em;
-      width: 100%;
-      transition: border 0.2s;
-    }
-    input[type='text']:focus {
-      border-color: #4374cf;
-      outline: none;
-    }
-    .linea-prodotti {
-      margin-bottom: 20px;
-    }
-    select {
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #c8d1e1;
-      font-size: 1em;
-      background: #f2f6fc;
-      color: #234078;
-      width: 100%;
-      margin-top: 6px;
-      transition: border 0.2s;
-    }
-    select:focus {
-      border-color: #4374cf;
-      outline: none;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      background: #fff;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(60,90,150,0.10);
-    }
-    th, td {
-      padding: 10px 8px;
-      text-align: center;
-      font-size: 1em;
-    }
-    th {
-      background: #eaf0fa;
-      color: #234078;
-      font-weight: 600;
-      border-bottom: 1px solid #c8d1e1;
-    }
-    td {
-      border-bottom: 1px solid #f2f6fc;
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    input[type='number'] {
-      width: 60px;
-      padding: 7px;
-      border-radius: 8px;
-      border: 1px solid #c8d1e1;
-      font-size: 1em;
-      transition: border 0.2s;
-    }
-    input[type='number']:focus {
-      border-color: #4374cf;
-      outline: none;
-    }
-    .totale {
-      text-align: right;
-      margin-top: 18px;
-      font-size: 1.1em;
-      color: #234078;
-      background: #f2f6fc;
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 1px 4px rgba(60,90,150,0.10);
-      font-weight: 500;
-    }
-    .btn, .login-btn {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(90deg, #4374cf 60%, #234078 100%);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 1.1em;
-      font-weight: 600;
-      margin-top: 20px;
-      cursor: pointer;
-      box-shadow: 0 2px 8px rgba(60,90,150,0.10);
-      transition: background 0.2s, box-shadow 0.2s;
-    }
-    .btn:hover, .login-btn:hover {
-      background: linear-gradient(90deg, #234078 60%, #4374cf 100%);
-      box-shadow: 0 4px 12px rgba(60,90,150,0.17);
-    }
-    footer {
-      text-align: center;
-      color: #a3adc6;
-      padding: 24px 0 8px 0;
-      font-size: 0.97em;
-      letter-spacing: 0.5px;
-    }
-    /* Login overlay */
-    .login-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(36,64,120,0.09);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      transition: opacity 0.2s;
-    }
-    .login-box {
-      background: #fff;
-      box-shadow: 0 8px 32px rgba(36,64,120,0.16);
-      border-radius: 18px;
-      padding: 36px 28px 28px 28px;
-      max-width: 340px;
-      text-align: center;
-    }
-    .login-box h2 {
-      color: #234078;
-      font-size: 1.3em;
-      margin-bottom: 24px;
-      margin-top: 0;
-    }
-    .login-box input[type='password'] {
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #c8d1e1;
-      font-size: 1em;
-      width: 100%;
-      margin-bottom: 16px;
-      transition: border 0.2s;
-    }
-    .login-box input[type='password']:focus {
-      border-color: #4374cf;
-      outline: none;
-    }
-    .login-error {
-      color: #d32f2f;
-      margin-bottom: 8px;
-      font-size: 0.99em;
-      min-height: 28px;
-    }
-    @media (max-width: 700px) {
-      .container {
-        max-width: 97vw;
-        margin: 16px 1vw;
-        padding: 18px 6vw 18px 6vw;
-      }
-      h1 {
-        font-size: 1.3em;
-      }
-      .logo {
-        max-width: 120px;
-      }
-      .totale {
-        font-size: 0.99em;
-        padding: 10px;
-      }
-      .login-box {
-        padding: 18px 8vw;
-        max-width: 95vw;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>PREVENTIVATORE AUTOMATICO PROGETTO PROLUNGHE</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
+        .container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #bbb; padding: 30px; }
+        h1 { text-align: center; color: #003366; }
+        .logo { display: block; margin: 0 auto 20px; width: 180px; }
+        .hidden { display: none; }
+        .form-group { margin-bottom: 18px; }
+        label { font-weight: bold; display: block; margin-bottom: 6px; }
+        input, select { width: 100%; padding: 8px; }
+        button { background: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
+        .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
+        .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
+    </style>
 </head>
 <body>
-  <!-- Login Overlay -->
-  <div class="login-overlay" id="loginOverlay">
-    <div class="login-box">
-      <h2>Accesso Preventivatore</h2>
-      <div class="login-error" id="loginError"></div>
-      <input type="password" id="loginPassword" placeholder="Password" autocomplete="off" />
-      <button class="login-btn" onclick="checkPassword()">Entra</button>
+    <div class="container">
+        <img src="https://www.pasolini.it/wp-content/uploads/2020/04/logo-pasolini.png" class="logo" alt="PASOLINI Logo">
+        <h1>PREVENTIVATORE AUTOMATICO<br>PROGETTO PROLUNGHE</h1>
+
+        <!-- Login -->
+        <div id="login-section">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password">
+            </div>
+            <button onclick="checkLogin()">Accedi</button>
+        </div>
+
+        <!-- Dati cliente e scelta linea -->
+        <div id="cliente-section" class="hidden">
+            <div class="form-group">
+                <label for="nome">Nome Cliente</label>
+                <input type="text" id="nome">
+            </div>
+            <div class="form-group">
+                <label for="azienda">Azienda</label>
+                <input type="text" id="azienda">
+            </div>
+            <div class="form-group">
+                <label for="linea">Seleziona Linea Prodotto</label>
+                <select id="linea"></select>
+            </div>
+            <button onclick="startPreventivo()">Avanti</button>
+        </div>
+
+        <!-- Preventivazione per linea -->
+        <div id="preventivo-section" class="hidden">
+            <div id="prodotti-list"></div>
+            <button onclick="aggiungiLinea()">Aggiungi un’altra linea prodotto</button>
+            <button onclick="mostraAnteprima()">Concludi preventivo</button>
+        </div>
+
+        <!-- Anteprima preventivo -->
+        <div id="anteprima-section" class="hidden">
+            <div class="preview" id="riepilogo"></div>
+            <div class="form-group">
+                <label for="emailCliente">Inserisci la tua email</label>
+                <input type="email" id="emailCliente" required>
+            </div>
+            <button onclick="inviaPreventivo()">Invia preventivo</button>
+        </div>
+
+        <!-- Messaggio conferma -->
+        <div id="conferma-section" class="hidden">
+            <div class="success">Preventivo inviato con successo. Grazie!</div>
+        </div>
     </div>
-  </div>
 
-  <div class="container" id="mainContainer">
-    <img src="LOGO PASOLINI CC.jpg" alt="Logo Pasolini" class="logo">
-    <h1>Preventivatore Dinamico</h1>
+    <script>
+        // Password di accesso
+        const PASSWORD = "PASOLINI2025";
 
-    <div class="dati-cliente">
-      <label>Nome Punto Vendita:</label>
-      <input type="text" id="puntoVendita" placeholder="Inserisci nome punto vendita">
-      <label>Intestazione Fatturazione:</label>
-      <input type="text" id="intestazione" placeholder="Inserisci intestazione fatturazione">
-    </div>
+        // Carica prodotti.json (simulato qui, in produzione fetch locale)
+        const prodotti = {
+            "linee": {
+                "PROLUNGHE": {
+                    "categorie": {
+                        "RIPIANI DA 40": [
+                            { "codice": "R40-80-G", "descrizione": "Ripiano 40x80", "colore": "Grigio", "prezzo": 12.5 },
+                            { "codice": "R40-100-B", "descrizione": "Ripiano 40x100", "colore": "Bianco", "prezzo": 13.0 }
+                        ],
+                        "PROLUNGHE": [
+                            { "codice": "PR40-G", "descrizione": "Prolunga 40", "colore": "Grigio", "prezzo": 5.0 }
+                        ],
+                        "SCHIENALI": [
+                            { "codice": "S40-80-B", "descrizione": "Schienale 40x80", "colore": "Bianco", "prezzo": 6.5 }
+                        ],
+                        "MENSOLE": [
+                            { "codice": "M40-100-G", "descrizione": "Mensola 40x100", "colore": "Grigio", "prezzo": 7.25 }
+                        ],
+                        "BARRE": [
+                            { "codice": "B40-G", "descrizione": "Barra 40", "colore": "Grigio", "prezzo": 2.0 }
+                        ],
+                        "GANCI E PORTAPREZZO": [
+                            { "codice": "G40", "descrizione": "Gancio 40", "colore": "", "prezzo": 1.5 }
+                        ]
+                    }
+                }
+                // ...altre linee
+            }
+        };
 
-    <div class="linea-prodotti">
-      <label for="linea">Seleziona la linea prodotto:</label>
-      <select id="linea" onchange="mostraProdotti()">
-        <option value="">-- Seleziona --</option>
-        <option value="PASOLINI_MEP">PASOLINI_MEP</option>
-        <option value="INTRAC">INTRAC</option>
-        <option value="FORTEZZA">FORTEZZA</option>
-        <option value="CEFLA">CEFLA</option>
-        <option value="SE B">SE B</option>
-        <option value="SEV G">SEV G</option>
-      </select>
-    </div>
+        // Variabili stato
+        let preventivo = [];
+        let currentLinea = null;
 
-    <table id="tabella-preventivo" style="display:none;">
-      <thead>
-        <tr>
-          <th>Codice</th>
-          <th>Descrizione</th>
-          <th>Prezzo</th>
-          <th>Quantità</th>
-          <th>Totale</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
+        // Login
+        function checkLogin() {
+            const pass = document.getElementById('password').value;
+            if (pass === PASSWORD) {
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('cliente-section').classList.remove('hidden');
+                popolaLinee();
+            } else {
+                alert('Password errata!');
+            }
+        }
 
-    <div class="totale" style="display:none;">
-      <div><strong>Totale netto:</strong> €<span id="netto">0.00</span></div>
-      <div>IVA 22%: €<span id="iva">0.00</span></div>
-      <div><strong>Totale con IVA:</strong> €<span id="totale">0.00</span></div>
-    </div>
+        // Popola select linee prodotto
+        function popolaLinee() {
+            const lineaSel = document.getElementById('linea');
+            lineaSel.innerHTML = '';
+            Object.keys(prodotti.linee).forEach(linea => {
+                const opt = document.createElement('option');
+                opt.value = linea;
+                opt.innerText = linea;
+                lineaSel.appendChild(opt);
+            });
+        }
 
-    <button onclick="window.print()" style="display:none;" id="btnStampa" class="btn">Stampa / Salva Preventivo</button>
-  </div>
-  <footer>
-    © 2025 Pasolini CC · Preventivatore Automatico
-  </footer>
+        // Avvio preventivo per linea selezionata
+        function startPreventivo() {
+            currentLinea = document.getElementById('linea').value;
+            mostraProdottiLinea(currentLinea);
+            document.getElementById('cliente-section').classList.add('hidden');
+            document.getElementById('preventivo-section').classList.remove('hidden');
+        }
 
-  <script>
-    // Login logic
-    function checkPassword() {
-      const pwdInput = document.getElementById('loginPassword');
-      const errorBox = document.getElementById('loginError');
-      const password = pwdInput.value.trim();
-      if (password === 'PASOLINI2025') {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('mainContainer').style.display = 'block';
-      } else {
-        errorBox.textContent = 'Password errata. Riprova.';
-        pwdInput.value = '';
-        pwdInput.focus();
-      }
-    }
-    // Invio con Enter
-    document.getElementById('loginPassword').addEventListener('keyup', function(e) {
-      if (e.key === 'Enter') checkPassword();
-    });
+        // Mostra prodotti per la linea selezionata
+        function mostraProdottiLinea(linea) {
+            const prodottiList = document.getElementById('prodotti-list');
+            prodottiList.innerHTML = `<h3>${linea}</h3>`;
+            Object.entries(prodotti.linee[linea].categorie).forEach(([categoria, prodottiCat]) => {
+                const catDiv = document.createElement('div');
+                catDiv.className = 'category';
+                catDiv.innerHTML = `<strong>${categoria}</strong>`;
+                prodottiCat.forEach(prodotto => {
+                    catDiv.innerHTML += `
+                        <div style="margin:8px 0">
+                            <span>${prodotto.codice} - ${prodotto.descrizione} ${prodotto.colore ? '('+prodotto.colore+')' : ''}</span>
+                            <span style="float:right">€${prodotto.prezzo.toFixed(2)}</span>
+                            <br>
+                            <input type="number" min="0" placeholder="Quantità" id="qty-${prodotto.codice}">
+                        </div>
+                    `;
+                });
+                prodottiList.appendChild(catDiv);
+            });
+        }
 
-    // Preventivatore logic
-    let prodotti = [];
-    let prodottiLinea = [];
+        // Aggiungi linea prodotto (conserva dati)
+        function aggiungiLinea() {
+            salvaQuantitaLinea();
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
+        }
 
-    // Carica prodotti dal file JSON
-    fetch('prodotti.json')
-      .then(response => response.json())
-      .then(data => {
-        prodotti = data;
-      });
+        // Salva quantità per la linea corrente
+        function salvaQuantitaLinea() {
+            const dati = { linea: currentLinea, prodotti: [] };
+            Object.entries(prodotti.linee[currentLinea].categorie).forEach(([categoria, prodottiCat]) => {
+                prodottiCat.forEach(prodotto => {
+                    const qty = parseInt(document.getElementById(`qty-${prodotto.codice}`).value) || 0;
+                    if(qty > 0) {
+                        dati.prodotti.push({
+                            ...prodotto,
+                            categoria,
+                            quantita: qty
+                        });
+                    }
+                });
+            });
+            if (dati.prodotti.length > 0) preventivo.push(dati);
+        }
 
-    // Mostra i prodotti della linea selezionata
-    function mostraProdotti() {
-      const lineaScelta = document.getElementById('linea').value;
-      prodottiLinea = prodotti.filter(p => p.linea === lineaScelta);
-      const tbody = document.querySelector("#tabella-preventivo tbody");
-      tbody.innerHTML = '';
-      prodottiLinea.forEach((prodotto, idx) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${prodotto.codice}</td>
-          <td>${prodotto.descrizione}</td>
-          <td>€${prodotto.prezzo.toFixed(2)}</td>
-          <td><input type="number" min="0" value="0" onchange="calcolaTotali()"></td>
-          <td class="riga-tot">0.00</td>
-        `;
-        tbody.appendChild(tr);
-      });
+        // Mostra anteprima preventivo
+        function mostraAnteprima() {
+            salvaQuantitaLinea();
+            document.getElementById('preventivo-section').classList.add('hidden');
+            document.getElementById('anteprima-section').classList.remove('hidden');
+            popolaRiepilogo();
+        }
 
-      document.getElementById('tabella-preventivo').style.display = prodottiLinea.length ? '' : 'none';
-      document.querySelector('.totale').style.display = prodottiLinea.length ? '' : 'none';
-      document.getElementById('btnStampa').style.display = prodottiLinea.length ? '' : 'none';
-      calcolaTotali();
-    }
+        // Popola riepilogo preventivo
+        function popolaRiepilogo() {
+            // Raggruppa prodotti per codice
+            const tutti = preventivo.flatMap(l => l.prodotti);
+            const riepilogo = {};
+            tutti.forEach(p => {
+                if (!riepilogo[p.codice]) {
+                    riepilogo[p.codice] = {...p, quantita: 0};
+                }
+                riepilogo[p.codice].quantita += p.quantita;
+            });
+            let html = `<h3>Riepilogo Preventivo</h3><table width="100%" border="0"><tr>
+                <th>Codice</th><th>Descrizione</th><th>Categoria</th><th>Colore</th><th>Quantità Totale</th><th>Prezzo Unitario</th></tr>`;
+            Object.values(riepilogo).forEach(p => {
+                html += `<tr>
+                    <td>${p.codice}</td>
+                    <td>${p.descrizione}</td>
+                    <td>${p.categoria}</td>
+                    <td>${p.colore || '-'}</td>
+                    <td>${p.quantita}</td>
+                    <td>€${p.prezzo.toFixed(2)}</td>
+                </tr>`;
+            });
+            html += '</table>';
+            document.getElementById('riepilogo').innerHTML = html;
+        }
 
-    function calcolaTotali() {
-      let netto = 0;
-      const righe = document.querySelectorAll("#tabella-preventivo tbody tr");
-      righe.forEach((riga, i) => {
-        const prezzo = prodottiLinea[i].prezzo;
-        const qty = parseFloat(riga.querySelector("input").value) || 0;
-        const tot = prezzo * qty;
-        riga.querySelector(".riga-tot").innerText = tot.toFixed(2);
-        netto += tot;
-      });
-      const iva = netto * 0.22;
-      const totale = netto + iva;
-      document.getElementById("netto").innerText = netto.toFixed(2);
-      document.getElementById("iva").innerText = iva.toFixed(2);
-      document.getElementById("totale").innerText = totale.toFixed(2);
-    }
-  </script>
+        // Invia preventivo (simulazione invio PDF)
+        function inviaPreventivo() {
+            // In produzione: generazione PDF, invio via email
+            // Qui: mostra conferma
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('conferma-section').classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
