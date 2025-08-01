@@ -517,43 +517,51 @@
             const fatturazione = document.getElementById('fatturazione').value;
 
             let totaleGenerale = 0;
+            const riepilogoConsolidato = {};
+
+            preventivo.forEach(lineaPreventivo => {
+                lineaPreventivo.prodotti.forEach(p => {
+                    if (!riepilogoConsolidato[p.codice]) {
+                        riepilogoConsolidato[p.codice] = {
+                            ...p,
+                            quantita: 0,
+                            lineeOrigine: []
+                        };
+                    }
+                    riepilogoConsolidato[p.codice].quantita += p.quantita;
+                    if (!riepilogoConsolidato[p.codice].lineeOrigine.includes(lineaPreventivo.linea)) {
+                        riepilogoConsolidato[p.codice].lineeOrigine.push(lineaPreventivo.linea);
+                    }
+                });
+            });
+
             let html = `<h3>Riepilogo Preventivo</h3>`;
             html += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
             html += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
             html += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
             html += `<hr>`;
+            html += `<p><strong>Linea Prodotto:</strong> ${preventivo.map(l => l.linea).join(', ')}</p>`;
+            html += `<br>`;
+            
+            html += `<table width="100%" border="0" style="text-align:left"><thead><tr>
+                <th>Codice</th><th>Descrizione</th><th>Quantità</th><th class="align-right">Prezzo Unitario</th><th class="align-right">Totale</th></tr></thead><tbody>`;
 
-            preventivo.forEach(lineaPreventivo => {
-                const tutti = lineaPreventivo.prodotti;
-                const riepilogo = {};
-                tutti.forEach(p => {
-                    if (!riepilogo[p.codice]) {
-                        riepilogo[p.codice] = {...p, quantita: 0};
-                    }
-                    riepilogo[p.codice].quantita += p.quantita;
-                });
-
-                let totaleLinea = 0;
+            Object.values(riepilogoConsolidato).forEach(p => {
+                const totaleRiga = p.quantita * p.prezzo;
+                totaleGenerale += totaleRiga;
                 
-                html += `<h4>Linea Prodotto: ${lineaPreventivo.linea}</h4>`;
-                html += `<table width="100%" border="0" style="text-align:left"><thead><tr>
-                    <th>Codice</th><th>Descrizione</th><th>Quantità</th><th class="align-right">Prezzo Unitario</th><th class="align-right">Totale</th></tr></thead><tbody>`;
+                const lineeOrigine = p.lineeOrigine.length > 1 ? `(${p.lineeOrigine.join(', ')})` : '';
 
-                Object.values(riepilogo).forEach(p => {
-                    const totaleRiga = p.quantita * p.prezzo;
-                    totaleGenerale += totaleRiga;
-                    totaleLinea += totaleRiga;
-                    html += `<tr>
-                        <td>${p.codice}</td>
-                        <td>${p.descrizione}</td>
-                        <td>${p.quantita}</td>
-                        <td class="align-right">€${p.prezzo.toFixed(2)}</td>
-                        <td class="align-right">€${totaleRiga.toFixed(2)}</td>
-                    </tr>`;
-                });
-                
-                html += `</tbody></table>`;
+                html += `<tr>
+                    <td>${p.codice}</td>
+                    <td>${p.descrizione} ${lineeOrigine}</td>
+                    <td>${p.quantita}</td>
+                    <td class="align-right">€${p.prezzo.toFixed(2)}</td>
+                    <td class="align-right">€${totaleRiga.toFixed(2)}</td>
+                </tr>`;
             });
+            
+            html += `</tbody></table>`;
             
             const iva = totaleGenerale * IVA_RATE;
             const totaleConIva = totaleGenerale + iva;
