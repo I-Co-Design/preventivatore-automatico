@@ -11,7 +11,7 @@
         .hidden { display: none; }
         .form-group { margin-bottom: 18px; }
         label { font-weight: bold; display: block; margin-bottom: 6px; }
-        input[type="text"], input[type="email"], input[type="password"], select { width: 100%; padding: 8px; }
+        input[type="text"], input[type="email"], input[type="password"], textarea, select { width: 100%; padding: 8px; }
         button { background: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; }
         button:disabled { background: #ccc; cursor: not-allowed; }
         .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
@@ -52,7 +52,7 @@
         @media print {
             body { font-size: 12px; }
             .container { box-shadow: none; border: none; padding: 0; }
-            button, .button-group { display: none; }
+            button, .button-group, .email-info, #note-section { display: none; } /* Nascosto anche il campo note */
             #anteprima-section { display: block !important; }
             h1, h2, h3, p { margin: 5px 0; }
         }
@@ -107,22 +107,26 @@
 
         <div id="anteprima-section" class="hidden">
             <div class="preview" id="riepilogo"></div>
-            <div class="form-group">
-                <label for="emailCliente">Inserisci la tua email</label>
-                <input type="email" id="emailCliente" required>
+            <div class="email-info">
+                <p style="color: red; font-weight: bold; text-align: center;">ATTENZIONE: Il servizio di invio mail non è ancora attivo. Dopo aver stampato il preventivo, si prega di inviarlo manualmente all'indirizzo del responsabile commerciale Pasolini.</p>
+            </div>
+            <div class="form-group" id="note-section">
+                <label for="note">Note</label>
+                <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
             </div>
             <div class="button-group">
+                <button onclick="tornaAllaHome()">Torna alla Home</button>
                 <button onclick="tornaAPreventivo()">Indietro</button>
                 <div>
                     <button onclick="stampaPreventivo()">Stampa Preventivo</button>
-                    <button onclick="inviaPreventivo()">Invia preventivo</button>
+                    <button onclick="concludiInvio()">Concludi</button>
                 </div>
             </div>
         </div>
 
         <div id="conferma-section" class="hidden">
-            <div class="success">Preventivo inviato con successo. Grazie!</div>
-            <button onclick="tornaAPreventivo()">Torna all'elenco prodotti</button>
+            <div class="success">Preventivo salvato e stampato. Si prega di inviarlo manualmente.</div>
+            <button onclick="tornaAllaHome()">Nuovo preventivo</button>
         </div>
     </div>
 
@@ -515,6 +519,7 @@
             const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
             const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
             const fatturazione = document.getElementById('fatturazione').value;
+            const note = document.getElementById('note').value;
 
             let totaleGenerale = 0;
             const riepilogoConsolidato = {};
@@ -539,6 +544,11 @@
             html += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
             html += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
             html += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
+            
+            // Le note verranno inserite qui, dopo il riepilogo
+            if (note) {
+                html += `<p><strong>Note:</strong> ${note.replace(/\n/g, '<br>')}</p>`;
+            }
             html += `<hr>`;
             html += `<p><strong>Linea Prodotto:</strong> ${preventivo.map(l => l.linea).join(', ')}</p>`;
             html += `<br>`;
@@ -574,32 +584,22 @@
             document.getElementById('riepilogo').innerHTML = html;
         }
 
-        async function inviaPreventivo() {
-            const email = document.getElementById('emailCliente').value;
-            if (!email) {
-                alert("Inserisci un'email valida.");
-                return;
-            }
-
-            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
-            const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
-            const fatturazione = document.getElementById('fatturazione').value;
-
-            const datiPreventivo = {
-                cliente: {
-                    email: email,
-                    nomePuntoVendita: nomePuntoVendita,
-                    indirizzoPuntoVendita: indirizzoPuntoVendita,
-                    fatturazione: fatturazione
-                },
-                preventivo: preventivo
-            };
-            
-            // Logica per invio email
-            
+        function concludiInvio() {
             document.getElementById('anteprima-section').classList.add('hidden');
             document.getElementById('conferma-section').classList.remove('hidden');
-            preventivo = []; // Resetta il preventivo dopo l'invio
+            // La variabile preventivo non viene resettata qui, si svuota solo tornando alla home.
+        }
+        
+        function tornaAllaHome() {
+            document.getElementById('conferma-section').classList.add('hidden');
+            document.getElementById('anteprima-section').classList.add('hidden');
+            document.getElementById('cliente-section').classList.remove('hidden');
+            // Resetta i dati del cliente e il preventivo per una nuova compilazione
+            document.getElementById('nomePuntoVendita').value = '';
+            document.getElementById('indirizzoPuntoVendita').value = '';
+            document.getElementById('fatturazione').value = '';
+            document.getElementById('note').value = ''; // Aggiunto il reset del campo note
+            preventivo = []; 
         }
 
         function stampaPreventivo() {
