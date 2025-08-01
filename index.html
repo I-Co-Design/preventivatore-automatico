@@ -16,7 +16,7 @@
         button:disabled { background: #ccc; cursor: not-allowed; }
         .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
         .product-item { display: flex; align-items: center; margin-bottom: 8px; }
-        .product-details { flex-grow: 1; }
+        .product-details { flex-grow: 1; font-size: 0.9em; }
         .product-item input[type="number"] { width: 80px; margin-left: 10px; }
         .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
         .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
@@ -64,6 +64,7 @@
                 <input type="email" id="emailCliente" required>
             </div>
             <button onclick="inviaPreventivo()">Invia preventivo</button>
+            <button onclick="stampaPreventivo()">Stampa Preventivo</button>
         </div>
 
         <div id="conferma-section" class="hidden">
@@ -472,6 +473,10 @@
 
             document.getElementById('anteprima-section').classList.add('hidden');
             document.getElementById('conferma-section').classList.remove('hidden');
+        }
+
+        function stampaPreventivo() {
+            window.print();
         }
     </script>
 </body>
