@@ -121,13 +121,13 @@
             <div class="form-group" id="note-section">
                 <label for="note">Note</label>
                 <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
+                <button onclick="popolaRiepilogo()">INSERISCI NOTA</button>
             </div>
             <div class="button-group">
-                <button onclick="tornaAllaHome()">Torna alla Home</button>
+                <button onclick="tornaAllaHome()">Nuovo preventivo</button>
                 <button onclick="tornaAPreventivo()">Indietro</button>
                 <div>
                     <button onclick="stampaPreventivo()">Stampa Preventivo</button>
-                    <button onclick="concludiInvio()">Concludi</button>
                 </div>
             </div>
         </div>
@@ -162,18 +162,18 @@
                             { "codice": "4320436/8", "descrizione": "RIPIANO LAMIERA 1330X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 19.47 }
                         ],
                         "PROLUNGHE": [
-                            { "codice": "4200544", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x90 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 15.15 },
-                            { "codice": "5007780", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x45 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.81 },
-                            { "codice": "4200546", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x90 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 20.45 },
-                            { "codice": "5007782", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x45 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 13.88 }
+                            { "codice": "4200544", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x90 VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 15.15 },
+                            { "codice": "5007780", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x45 VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.81 },
+                            { "codice": "4200546", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x90 VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 20.45 },
+                            { "codice": "5007782", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x45 VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 13.88 }
                         ],
                         "SCHIENALI": [
-                            { "codice": "4280022", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.01 },
-                            { "codice": "4280024", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.64 },
-                            { "codice": "4280032", "descrizione": "SCHIENALE DA 750X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.05 },
-                            { "codice": "4280034", "descrizione": "SCHIENALE DA 1000X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.34 },
-                            { "codice": "4280026", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 10.18 },
-                            { "codice": "4280036", "descrizione": "SCHIENALE DA 1330X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 16.86 }
+                            { "codice": "4280022", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.01 },
+                            { "codice": "4280024", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.64 },
+                            { "codice": "4280032", "descrizione": "SCHIENALE DA 750X430 MM VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.05 },
+                            { "codice": "4280034", "descrizione": "SCHIENALE DA 1000X430 MM VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.34 },
+                            { "codice": "4280026", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 10.18 },
+                            { "codice": "4280036", "descrizione": "SCHIENALE DA 1330X430 MM VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 16.86 }
                         ],
                         "MENSOLE": [
                             { "codice": "4360026", "descrizione": "MENSOLA 400MM (FERRO) RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.23 }
@@ -207,13 +207,13 @@
                             { "codice": "AS2220E.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 }
                         ],
                         "SCHIENALI": [
-                            { "codice": "AS1253E.25.1000.250.7035", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.79 },
-                            { "codice": "AS1253E.25.1330.250.7035", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 },
-                            { "codice": "AS1253E.25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.00 },
-                            { "codice": "AS1253E.25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 17.10 }
+                            { "codice": "AS1253E.25.1000.250.7035", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.79 },
+                            { "codice": "AS1253E.25.1330.250.7035", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 },
+                            { "codice": "AS1253E.25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.00 },
+                            { "codice": "AS1253E.25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 17.10 }
                         ],
                         "MENSOLE": [
-                            { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA  DA 40 VERNICIATORAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
+                            { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA DA 40 VERNICIATORAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
                         ],
                         "BARRE": [
                             { "codice": "5007022.M", "descrizione": "BARRA 1000mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 18.15 },
@@ -336,19 +336,19 @@
                             { "codice": "4320436/8", "descrizione": "RIPIANO LAMIERA 1330X400 FORATO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 19.47 }
                         ],
                         "PROLUNGHE": [
-                            { "codice": "AS2220C.240", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 240X105 VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 40.40 },
-                            { "codice": "AS2220C", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 45.12 }
+                            { "codice": "AS2220C.240", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 240X105 VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 40.40 },
+                            { "codice": "AS2220C", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 45.12 }
                         ],
                         "SCHIENALI": [
-                            { "codice": "AS1253C.40.750.240", "descrizione": "SCHIENALE DA 750X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 26.40 },
-                            { "codice": "AS1253C.40.1000.240", "descrizione": "SCHIENALE DA 1000X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.47 },
-                            { "codice": "AS1253C.40.1330.240", "descrizione": "SCHIENALE DA 1330X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.20 },
-                            { "codice": "AS1253C.40.750.400", "descrizione": "SCHIENALE DA 750X400 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 21.45 },
-                            { "codice": "AS1253C.40.1000.400", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 17.88 }
+                            { "codice": "AS1253C.40.750.240", "descrizione": "SCHIENALE DA 750X240 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 26.40 },
+                            { "codice": "AS1253C.40.1000.240", "descrizione": "SCHIENALE DA 1000X240 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.47 },
+                            { "codice": "AS1253C.40.1330.240", "descrizione": "SCHIENALE DA 1330X240 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.20 },
+                            { "codice": "AS1253C.40.750.400", "descrizione": "SCHIENALE DA 750X400 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 21.45 },
+                            { "codice": "AS1253C.40.1000.400", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 17.88 }
                         ],
                         "MENSOLE": [
                             { "codice": "AS1252C.400", "descrizione": "MENSOLA TIPO SEV BIANCO 3A 1P PASSO 40 P=400 SP.3 MM RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.07 },
-                            { "codice": "AS1252D.400", "descrizione": "COPPIA MENSOLA 400MM PER PIANO IN VETRO SP.7/8MM  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 7.70 }
+                            { "codice": "AS1252D.400", "descrizione": "COPPIA MENSOLA 400MM PER PIANO IN VETRO SP.7/8MM RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 7.70 }
                         ],
                         "BARRE": [
                             { "codice": "5007022.SB", "descrizione": "BARRA 1000mm", "colore": "CROMATE", "prezzo": 18.15 },
@@ -378,12 +378,12 @@
                             { "codice": "AS2220A.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 }
                         ],
                         "SCHIENALI": [
-                            { "codice": "AS1253.S25.750.250.7035", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.50 },
-                            { "codice": "AS1253.S25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.47 },
-                            { "codice": "AS1253.S25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO   RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 }
+                            { "codice": "AS1253.S25.750.250.7035", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.50 },
+                            { "codice": "AS1253.S25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.47 },
+                            { "codice": "AS1253.S25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 }
                         ],
                         "MENSOLE": [
-                            { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA  DA 40 VERNICIATO RAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
+                            { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA DA 40 VERNICIATO RAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
                         ],
                         "BARRE": [
                             { "codice": "5007022.M", "descrizione": "BARRA 1000mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 18.15 },
@@ -536,7 +536,6 @@
 
             let totaleGenerale = 0;
             const riepilogoConsolidato = {};
-
             preventivo.forEach(lineaPreventivo => {
                 lineaPreventivo.prodotti.forEach(p => {
                     if (!riepilogoConsolidato[p.codice]) {
@@ -557,7 +556,6 @@
             html += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
             html += `<p><strong>Indirizzo:</strong> ${indirizzoPuntoVendita}</p>`;
             html += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
-            
             // Le note verranno inserite qui, dopo il riepilogo
             if (note) {
                 html += `<p><strong>Note:</strong> ${note.replace(/\n/g, '<br>')}</p>`;
@@ -565,10 +563,8 @@
             html += `<hr>`;
             html += `<p><strong>Linea Prodotto:</strong> ${preventivo.map(l => l.linea).join(', ')}</p>`;
             html += `<br>`;
-            
             html += `<table width="100%" border="0" style="text-align:left"><thead><tr>
                 <th>Codice</th><th>Descrizione</th><th>Quantità</th><th class="align-right">Prezzo Unitario</th><th class="align-right">Totale</th></tr></thead><tbody>`;
-
             Object.values(riepilogoConsolidato).forEach(p => {
                 const totaleRiga = p.quantita * p.prezzo;
                 totaleGenerale += totaleRiga;
@@ -583,17 +579,14 @@
                     <td class="align-right">€${totaleRiga.toFixed(2)}</td>
                 </tr>`;
             });
-            
             html += `</tbody></table>`;
             
             const iva = totaleGenerale * IVA_RATE;
             const totaleConIva = totaleGenerale + iva;
-
             html += `<br>
             <p><strong>Subtotale (senza IVA):</strong> <span style="float:right">€${totaleGenerale.toFixed(2)}</span></p>
             <p><strong>IVA (22%):</strong> <span style="float:right">€${iva.toFixed(2)}</span></p>
             <h3>Totale Generale: <span style="float:right">€${totaleConIva.toFixed(2)}</span></h3>`;
-            
             document.getElementById('riepilogo').innerHTML = html;
         }
 
@@ -612,7 +605,7 @@
             document.getElementById('indirizzoPuntoVendita').value = '';
             document.getElementById('fatturazione').value = '';
             document.getElementById('note').value = ''; // Aggiunto il reset del campo note
-            preventivo = []; 
+            preventivo = [];
         }
 
         function stampaPreventivo() {
