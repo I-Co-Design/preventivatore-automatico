@@ -22,7 +22,7 @@
         .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
         .button-group { display: flex; justify-content: space-between; margin-top: 20px; }
         .preview table td, .preview table th { font-size: 0.8em; }
-        
+
         /* Stili per l'input della password e l'icona */
         .password-container {
             position: relative;
@@ -30,7 +30,8 @@
         }
         .password-container input {
             width: 100%;
-            padding-right: 40px; /* Spazio per l'icona */
+            padding-right: 40px;
+            box-sizing: border-box; /* Assicura che il padding non allarghi il campo */
         }
         .toggle-password {
             position: absolute;
@@ -38,6 +39,9 @@
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
+            user-select: none; /* Impedisce la selezione del testo dell'icona */
+            font-size: 1.2em; /* Dimensione maggiore per l'icona */
+            color: #555;
         }
     </style>
 </head>
@@ -246,7 +250,7 @@
                             { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
                             { "codice": "MPS.42.0660.BL", "descrizione": "PORTASCANNER 660mm", "colore": "BLU", "prezzo": 1.91 },
                             { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm", "colore": "BLU", "prezzo": 2.44 },
-                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm", "colore": "BLU", "prezzo": 2.71 }
+                            { "codice": "MPS.42.1318.BL", "colore": "BLU", "prezzo": 2.71 }
                         ]
                     }
                 },
@@ -384,10 +388,10 @@
             const toggleIcon = document.querySelector('.toggle-password');
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                toggleIcon.textContent = '🙈'; // Icona per nascondere
+                toggleIcon.textContent = '🙈';
             } else {
                 passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️'; // Icona per mostrare
+                toggleIcon.textContent = '👁️';
             }
         }
 
@@ -483,6 +487,8 @@
         }
 
         function popolaRiepilogo() {
+            const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
+            const fatturazione = document.getElementById('fatturazione').value;
             const tutti = preventivo.flatMap(l => l.prodotti);
             const riepilogo = {};
             tutti.forEach(p => {
@@ -493,7 +499,10 @@
             });
 
             let totaleGenerale = 0;
-            let html = `<h3>Riepilogo Preventivo</h3><table width="100%" border="0" style="text-align:left"><tr>
+            let html = `<h3>Riepilogo Preventivo</h3>`;
+            html += `<p><strong>Punto Vendita:</strong> ${nomePuntoVendita}</p>`;
+            html += `<p><strong>Fatturazione:</strong> ${fatturazione}</p>`;
+            html += `<table width="100%" border="0" style="text-align:left"><tr>
                 <th>Codice</th><th>Descrizione</th><th>Categoria</th><th>Colore</th><th>Quantità</th><th>Prezzo Unitario</th><th>Totale</th></tr>`;
 
             Object.values(riepilogo).forEach(p => {
