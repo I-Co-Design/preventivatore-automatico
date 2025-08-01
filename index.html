@@ -118,16 +118,16 @@
             <div class="email-info">
                 <p style="color: red; font-weight: bold; text-align: center;">ATTENZIONE: Il servizio di invio mail non è ancora attivo. Dopo aver stampato il preventivo, si prega di inviarlo manualmente all'indirizzo del responsabile commerciale Pasolini.</p>
             </div>
-            <div class="form-group" id="note-section">
-                <label for="note">Note</label>
-                <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
-            </div>
+<div class="form-group" id="note-section">
+    <label for="note">Note</label>
+    <textarea id="note" rows="4" placeholder="Inserisci qui eventuali note o richieste speciali per il preventivo..."></textarea>
+    <button onclick="inserisciNotaNelRiepilogo()">INSERISCI NOTA</button>
+</div>
             <div class="button-group">
-                <button onclick="tornaAllaHome()">Torna alla Home</button>
+               <button onclick="tornaAllaHome()">Nuovo Preventivo</button>
                 <button onclick="tornaAPreventivo()">Indietro</button>
                 <div>
                     <button onclick="stampaPreventivo()">Stampa Preventivo</button>
-                    <button onclick="concludiInvio()">Concludi</button>
                 </div>
             </div>
         </div>
@@ -528,7 +528,16 @@
             popolaRiepilogo();
         }
 
-        function popolaRiepilogo() {
+function inserisciNotaNelRiepilogo() {
+    const nota = document.getElementById('note').value.trim();
+    const riepilogoDiv = document.getElementById('riepilogo');
+
+    if (nota && !riepilogoDiv.innerHTML.includes("Note:")) {
+        const notaHTML = `<p><strong>Note:</strong> ${nota.replace(/\n/g, '<br>')}</p>`;
+        riepilogoDiv.innerHTML = riepilogoDiv.innerHTML.replace(`<hr>`, notaHTML + '<hr>');
+    }
+}
+{
             const nomePuntoVendita = document.getElementById('nomePuntoVendita').value;
             const indirizzoPuntoVendita = document.getElementById('indirizzoPuntoVendita').value;
             const fatturazione = document.getElementById('fatturazione').value;
