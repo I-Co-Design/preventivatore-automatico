@@ -1,401 +1,124 @@
-// Password di accesso
-const PASSWORD = "PASOLINI2025";
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>PREVENTIVATORE AUTOMATICO PROGETTO PROLUNGHE</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f7f7f7; }
+        .container { max-width: 800px; margin: 40px auto; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #bbb; padding: 30px; }
+        h1 { text-align: center; color: #003366; }
+        .logo { display: block; margin: 0 auto 20px; width: 180px; }
+        .hidden { display: none; }
+        .form-group { margin-bottom: 18px; }
+        label { font-weight: bold; display: block; margin-bottom: 6px; }
+        input, select { width: 100%; padding: 8px; }
+        button { background: #003366; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-size: 16px; cursor: pointer; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .category { background: #eef; margin-bottom: 20px; padding: 15px; border-radius: 6px; }
+        .preview { background: #ffe; padding: 18px; border-radius: 8px; margin-bottom: 18px; }
+        .success { color: green; font-weight: bold; text-align: center; padding: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="https://www.pasolini.it/wp-content/uploads/2020/04/logo-pasolini.png" class="logo" alt="PASOLINI Logo">
+        <h1>PREVENTIVATORE AUTOMATICO<br>PROGETTO PROLUNGHE</h1>
 
-// Database dei prodotti con i dati forniti
-const prodotti = {
-    "linee": {
-        "PASOLINI_MEP": {
-            "categorie": {
-                "RIPIANI DA 40": [
-                    { "codice": "4320232/8", "descrizione": "RIPIANO LAMIERA 750X400 LISCIO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 18.24 },
-                    { "codice": "4320432/8", "descrizione": "RIPIANO LAMIERA 750X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 14.68 },
-                    { "codice": "4320234/8", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 24.80 },
-                    { "codice": "4320434/8", "descrizione": "RIPIANO LAMIERA 1000X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 23.46 },
-                    { "codice": "4320236/8", "descrizione": "RIPIANO LAMIERA 1330X400 LISCIO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 24.18 },
-                    { "codice": "4320436/8", "descrizione": "RIPIANO LAMIERA 1330X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 19.47 }
-                ],
-                "PROLUNGHE": [
-                    { "codice": "4200544", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x90 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 15.15 },
-                    { "codice": "5007780", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x45 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.81 },
-                    { "codice": "4200546", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x90 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 20.45 },
-                    { "codice": "5007782", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x45 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 13.88 }
-                ],
-                "SCHIENALI": [
-                    { "codice": "4280022", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.01 },
-                    { "codice": "4280024", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.64 },
-                    { "codice": "4280032", "descrizione": "SCHIENALE DA 750X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.05 },
-                    { "codice": "4280034", "descrizione": "SCHIENALE DA 1000X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.34 },
-                    { "codice": "4280026", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 10.18 },
-                    { "codice": "4280036", "descrizione": "SCHIENALE DA 1330X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 16.86 }
-                ],
-                "MENSOLE": [
-                    { "codice": "4360026", "descrizione": "MENSOLA 400MM (FERRO) RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.23 }
-                ],
-                "BARRE": [
-                    { "codice": "5007020", "descrizione": "BARRA 750mm", "colore": "CROMATE", "prezzo": 10.68 },
-                    { "codice": "5007022", "descrizione": "BARRA 1000mm", "colore": "CROMATE", "prezzo": 12.90 },
-                    { "codice": "5007024", "descrizione": "BARRA 1330mm", "colore": "CROMATE", "prezzo": 17.25 }
-                ],
-                "GANCI": [
-                    { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
-                ],
-                "PORTAPREZZI": [
-                    { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                    { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
-                    { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                    { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
-                ]
-            }
-        },
-        "INTRAC": {
-            "categorie": {
-                "RIPIANI da 40": [
-                    { "codice": "4320234/8.7035", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL 7035", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 25.86 },
-                    { "codice": "4320236/8.7035", "descrizione": "RIPIANO LAMIERA 1330X400 LISCIO VERNICIATO RAL 7035", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 29.76 }
-                ],
-                "PROLUNGHE": [
-                    { "codice": "AS2220E.70.250.750", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250X75 VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 40.40 },
-                    { "codice": "AS2220E.250.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250X105 VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 40.40 },
-                    { "codice": "AS2220E.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 }
-                ],
-                "SCHIENALI": [
-                    { "codice": "AS1253E.25.1000.250.7035", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.79 },
-                    { "codice": "AS1253E.25.1330.250.7035", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 },
-                    { "codice": "AS1253E.25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.00 },
-                    { "codice": "AS1253E.25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO  RAL 7035 OPACO (INTRAC)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 17.10 }
-                ],
-                "MENSOLE": [
-                    { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA  DA 40 VERNICIATORAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
-                ],
-                "BARRE": [
-                    { "codice": "5007022.M", "descrizione": "BARRA 1000mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 18.15 },
-                    { "codice": "5007024.M", "descrizione": "BARRA 1330mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 20.57 }
-                ],
-                "GANCI": [
-                    { "codice": "5007030", "descrizione": "GANCIO DA 30cm diam. 6 MM mod. INTRAC", "colore": "CROMATI", "prezzo": 2.71 }
-                ],
-                "PORTAPREZZI": [
-                    { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                    { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
-                    { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                    { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
-                ]
-            }
-        },
-        "CEFLA": {
-            "categorie": {
-                "RIPIANI da 40": [
-                    { "codice": "4320430/8.9010", "descrizione": "RIPIANI FORATO NON BUCCIATO 665mmX400mm BIANCO", "colore": "BIANCO RAL 9010", "prezzo": 23.00 },
-                    { "codice": "4320430/8.7024", "descrizione": "RIPIANI FORATO NON BUCCIATO 665 mmX400 mm ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 23.00 },
-                    { "codice": "4320434/8.9010", "descrizione": "RIPIANI FORATO NON BUCCIATO 1000mmX400 cm BIANCO", "colore": "BIANCO RAL 9010", "prezzo": 23.00 },
-                    { "codice": "4320434/8.7024", "descrizione": "RIPIANI FORATO NON BUCCIATO 1000 mmX400 mm ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 23.00 },
-                    { "codice": "4320436/8.9010", "descrizione": "RIPIANI FORATO NON BUCCIATO 1330mmX400 cm BIANCO", "colore": "BIANCO RAL 9010", "prezzo": 32.00 },
-                    { "codice": "4320436/8.7024", "descrizione": "RIPIANI FORATO NON BUCCIATO 1330mmX400 cm ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 32.00 },
-                    { "codice": "4320230/8.9010", "descrizione": "RIPIANI LISCIO NON BUCCIATO 665 mmX400mm BIANCO", "colore": "BIANCO RAL 9010", "prezzo": 18.00 },
-                    { "codice": "4320230/8.7024", "descrizione": "RIPIANI LISCIO NON BUCCIATO 665 mmX400 mm ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 18.00 },
-                    { "codice": "4320234/8.9010", "descrizione": "RIPIANI LISCIO NON BUCCIATO 1000mmX400 cm BIANCO", "colore": "BIANCO RAL 9010", "prezzo": 23.51 },
-                    { "codice": "4320234/8.7024", "descrizione": "RIPIANI LISCIO NON BUCCIATO 1000mmX400 cm ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 23.51 },
-                    { "codice": "4320236/8.9010", "descrizione": "RIPIANI LISCIO NON BUCCIATO 1330mmX400 cm BIANCO", "colore": "BIANCO RAL 9010", "prezzo": 27.05 },
-                    { "codice": "4320236/8.7024", "descrizione": "RIPIANI LISCIO NON BUCCIATO 1330mmX400 cm ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 27.05 }
-                ],
-                "PROLUNGHE": [
-                    { "codice": "AS2220D.250.9010", "descrizione": "PROLUNGA 9X250MM BIANCA", "colore": "BIANCO RAL 9010", "prezzo": 36.73 },
-                    { "codice": "AS2220D.250.7024", "descrizione": "PROLUNGA 9X250MM ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 36.73 },
-                    { "codice": "AS2220D.9010", "descrizione": "PROLUNGA 9X400MM BIANCA", "colore": "BIANCO RAL 9010", "prezzo": 41.02 },
-                    { "codice": "AS2220D.7024", "descrizione": "PROLUNGA 9X400MM ANTRACITE", "colore": "ANTRACITE RAL 7024", "prezzo": 41.02 }
-                ],
-                "SCHIENALI": [
-                    { "codice": "AS1253D.25.665.250.9010", "descrizione": "SCHIENALE 660X250MM", "colore": "BIANCO RAL 9010", "prezzo": 10.00 },
-                    { "codice": "AS1253D.25.665.250.7024", "descrizione": "SCHIENALE 660X250MM", "colore": "ANTRACITE RAL 7024", "prezzo": 10.00 },
-                    { "codice": "AS1253D.25.665.400.9010", "descrizione": "SCHIENALE 665X400MM", "colore": "BIANCO RAL 9010", "prezzo": 13.00 },
-                    { "codice": "AS1253D.25.665.400.7024", "descrizione": "SCHIENALE 665X400MM", "colore": "ANTRACITE RAL 7024", "prezzo": 13.00 },
-                    { "codice": "AS1253D.25.1000.250.9010", "descrizione": "SCHIENALE 1000X250MM", "colore": "BIANCO RAL 9010", "prezzo": 13.00 },
-                    { "codice": "AS1253D.25.1000.250.7024", "descrizione": "SCHIENALE 1000X250MM", "colore": "ANTRACITE RAL 7024", "prezzo": 13.00 },
-                    { "codice": "AS1253D.25.1000.400.9010", "descrizione": "SCHIENALE 1000X400MM", "colore": "BIANCO RAL 9010", "prezzo": 14.63 },
-                    { "codice": "AS1253D.25.1000.400.7024", "descrizione": "SCHIENALE 1000X400MM", "colore": "ANTRACITE RAL 7024", "prezzo": 14.63 },
-                    { "codice": "AS1253D.25.1330.250.9010", "descrizione": "SCHIENALE 1330X250MM", "colore": "BIANCO RAL 9010", "prezzo": 14.00 },
-                    { "codice": "AS1253D.25.1330.250.7024", "descrizione": "SCHIENALE 1330X250MM", "colore": "ANTRACITE RAL 7024", "prezzo": 14.00 },
-                    { "codice": "AS1253D.25.1330.400.9010", "descrizione": "SCHIENALE 1330X400MM", "colore": "BIANCO RAL 9010", "prezzo": 16.86 },
-                    { "codice": "AS1253D.25.1330.400.7024", "descrizione": "SCHIENALE 1330X400MM", "colore": "ANTRACITE RAL 7024", "prezzo": 16.86 },
-                    { "codice": "4280024", "descrizione": "SCHIENALE 1000X250MM", "colore": "BIANCO", "prezzo": 8.64 },
-                    { "codice": "4280034", "descrizione": "SCHIENALE 1000X430MM", "colore": "BIANCO", "prezzo": 11.34 }
-                ],
-                "MENSOLE": [
-                    { "codice": "AS1252A.400.9010", "descrizione": "MENSOLA 400MM", "colore": "BIANCO RAL 9010", "prezzo": 3.59 },
-                    { "codice": "AS1252A.400.7024", "descrizione": "MENSOLA 400MM", "colore": "ANTRACITE RAL 7024", "prezzo": 3.59 }
-                ],
-                "BARRE": [
-                    { "codice": "5007018.M", "descrizione": "BARRA 660mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 14.00 },
-                    { "codice": "5007022.M", "descrizione": "BARRA 1000mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 12.90 },
-                    { "codice": "5007024.M", "descrizione": "BARRA 1330mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 14.90 }
-                ],
-                "GANCI": [
-                    { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm DA 8", "colore": "CROMATI", "prezzo": 2.71 }
-                ],
-                "PORTAPREZZI": [
-                    { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                    { "codice": "MPS.42.0660.BL", "descrizione": "PORTASCANNER 660mm", "colore": "BLU", "prezzo": 1.91 },
-                    { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm", "colore": "BLU", "prezzo": 2.44 },
-                    { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm", "colore": "BLU", "prezzo": 2.71 }
-                ]
-            }
-        },
-        "FORTEZZA": {
-            "categorie": {
-                "RIPIANI da 40": [
-                    { "codice": "4320434/8.7035", "descrizione": "RIPIANI FORATO NON BUCCIATO 1000 mmX400 mm RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 23.00 },
-                    { "codice": "4320436/8.7035", "descrizione": "RIPIANI FORATO NON BUCCIATO 1330mmX400 cm RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 32.00 },
-                    { "codice": "4320234/8.7035", "descrizione": "RIPIANI LISCIO NON BUCCIATO 1000mmX400 cm RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 23.51 },
-                    { "codice": "4320236/8.7035", "descrizione": "RIPIANI LISCIO NON BUCCIATO 1330mmX400 cm RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 27.05 }
-                ],
-                "PROLUNGHE": [
-                    { "codice": "AS2220D.250.7035", "descrizione": "PROLUNGA 9X250MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 36.73 },
-                    { "codice": "AS2220D.7035", "descrizione": "PROLUNGA 9X400MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 41.02 }
-                ],
-                "SCHIENALI": [
-                    { "codice": "AS1253D.25.1000.250.7035", "descrizione": "SCHIENALE 1000X250MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 13.00 },
-                    { "codice": "AS1253D.25.1000.400.7035", "descrizione": "SCHIENALE 1000X400MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 14.63 },
-                    { "codice": "AS1253D.25.1330.250.7035", "descrizione": "SCHIENALE 1330X250MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 14.00 },
-                    { "codice": "AS1253D.25.1330.400.7035", "descrizione": "SCHIENALE 1330X400MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 16.86 }
-                ],
-                "MENSOLE": [
-                    { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA 400MM RAL 7035", "colore": "GRIGIO RAL7035", "prezzo": 3.59 }
-                ],
-                "BARRE": [
-                    { "codice": "5007022.F", "descrizione": "BARRA 1000mm mod.FORTEZZA", "colore": "CROMATE", "prezzo": 17.25 },
-                    { "codice": "5007024.F", "descrizione": "BARRA 1330mm mod.FORTEZZA", "colore": "CROMATE", "prezzo": 19.55 }
-                ],
-                "GANCI": [
-                    { "codice": "5007026.1.F", "descrizione": "GANCIO CON PORTAPREZZO DA 300 -D6 per attacco barra FORTEZZA", "colore": "CROMATI", "prezzo": 2.70 },
-                    { "codice": "5007028.1.F", "descrizione": "GANCIO CON PORTAPREZZO DA 400 -D6 per attacco barra FORTEZZA", "colore": "CROMATI", "prezzo": 3.06 }
-                ],
-                "PORTAPREZZI": [
-                    { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                    { "codice": "MPS.42.0660.BL", "descrizione": "PORTASCANNER 660mm", "colore": "BLU", "prezzo": 1.91 },
-                    { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm", "colore": "BLU", "prezzo": 2.44 },
-                    { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm", "colore": "BLU", "prezzo": 2.71 }
-                ]
-            }
-        },
-        "SEV B": {
-            "categorie": {
-                "RIPIANI da 40": [
-                    { "codice": "4320232/8", "descrizione": "RIPIANO LAMIERA 750X400 LISCIO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 18.24 },
-                    { "codice": "4320432/8", "descrizione": "RIPIANO LAMIERA 750X400 FORATO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 14.68 },
-                    { "codice": "4320234/8", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 24.80 },
-                    { "codice": "4320434/8", "descrizione": "RIPIANO LAMIERA 1000X400 FORATO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 23.46 },
-                    { "codice": "4320236/8", "descrizione": "RIPIANO LAMIERA 1330X400 LISCIO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 24.18 },
-                    { "codice": "4320436/8", "descrizione": "RIPIANO LAMIERA 1330X400 FORATO VERNICIATO RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 19.47 }
-                ],
-                "PROLUNGHE": [
-                    { "codice": "AS2220C.240", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 240X105 VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 40.40 },
-                    { "codice": "AS2220C", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 45.12 }
-                ],
-                "SCHIENALI": [
-                    { "codice": "AS1253C.40.750.240", "descrizione": "SCHIENALE DA 750X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 26.40 },
-                    { "codice": "AS1253C.40.1000.240", "descrizione": "SCHIENALE DA 1000X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.47 },
-                    { "codice": "AS1253C.40.1330.240", "descrizione": "SCHIENALE DA 1330X240 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.20 },
-                    { "codice": "AS1253C.40.750.400", "descrizione": "SCHIENALE DA 750X400 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 21.45 },
-                    { "codice": "AS1253C.40.1000.400", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 17.88 }
-                ],
-                "MENSOLE": [
-                    { "codice": "AS1252C.400", "descrizione": "MENSOLA TIPO SEV BIANCO 3A 1P PASSO 40 P=400 SP.3 MM RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.07 },
-                    { "codice": "AS1252D.400", "descrizione": "COPPIA MENSOLA 400MM PER PIANO IN VETRO SP.7/8MM  RAL 9010 BUCCIATO AXALTA", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 7.70 }
-                ],
-                "BARRE": [
-                    { "codice": "5007022.SB", "descrizione": "BARRA 1000mm", "colore": "CROMATE", "prezzo": 18.15 },
-                    { "codice": "5007024.SB", "descrizione": "BARRA 1330mm", "colore": "CROMATE", "prezzo": 20.57 }
-                ],
-                "GANCI": [
-                    { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
-                ],
-                "PORTAPREZZI": [
-                    { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                    { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
-                    { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                    { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
-                ]
-            }
-        },
-        "SEV G": {
-            "categorie": {
-                "RIPIANI da 40": [
-                    { "codice": "4320234/8.7035", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL 7035", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 25.86 },
-                    { "codice": "4320236/8.7035", "descrizione": "RIPIANO LAMIERA 1330X400 LISCIO VERNICIATO RAL 7035", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 29.76 }
-                ],
-                "PROLUNGHE": [
-                    { "codice": "AS2220A.75.250.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250X75 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 40.40 },
-                    { "codice": "AS2220A.250.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250X105 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 40.40 },
-                    { "codice": "AS2220A.75.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X75 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 },
-                    { "codice": "AS2220A.7035", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 400X105 VERNICIATO RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 45.12 }
-                ],
-                "SCHIENALI": [
-                    { "codice": "AS1253.S25.750.250.7035", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 16.50 },
-                    { "codice": "AS1253.S25.1000.400.7035", "descrizione": "SCHIENALE DA 1000X400 MM VERNICIATO  RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 9.47 },
-                    { "codice": "AS1253.S25.1330.400.7035", "descrizione": "SCHIENALE DA 1330X400 MM VERNICIATO   RAL 7035 OPACO (SEV G)", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 11.20 }
-                ],
-                "MENSOLE": [
-                    { "codice": "AS1252A.400.7035", "descrizione": "MENSOLA  DA 40 VERNICIATO RAL 7035 OPACO", "colore": "GRIGIO RAL 7035 OPACO", "prezzo": 3.95 }
-                ],
-                "BARRE": [
-                    { "codice": "5007022.M", "descrizione": "BARRA 1000mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 18.15 },
-                    { "codice": "5007024.M", "descrizione": "BARRA 1330mm compatibile SEVG/INTRAC/CEFLA", "colore": "CROMATE", "prezzo": 20.57 }
-                ],
-                "GANCI": [
-                    { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
-                ],
-                "PORTAPREZZI": [
-                    { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
-                    { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
-                    { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
-                    { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
-                ]
-            }
-        }
-    }
-};
+        <div id="login-section">
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password">
+            </div>
+            <button onclick="checkLogin()">Accedi</button>
+        </div>
 
-let preventivo = [];
-let currentLinea = null;
+        <div id="cliente-section" class="hidden">
+            <div class="form-group">
+                <label for="nomePuntoVendita">Nome Punto Vendita</label>
+                <input type="text" id="nomePuntoVendita">
+            </div>
+            <div class="form-group">
+                <label for="fatturazione">Fatturazione</label>
+                <input type="text" id="fatturazione">
+            </div>
+            <div class="form-group">
+                <label for="linea">Seleziona Linea Prodotto</label>
+                <select id="linea"></select>
+            </div>
+            <button onclick="startPreventivo()">Avanti</button>
+        </div>
 
-function checkLogin() {
-    const pass = document.getElementById('password').value;
-    if (pass === PASSWORD) {
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('cliente-section').classList.remove('hidden');
-        popolaLinee();
-    } else {
-        alert('Password errata!');
-    }
-}
+        <div id="preventivo-section" class="hidden">
+            <div id="prodotti-list"></div>
+            <button onclick="aggiungiLinea()">Aggiungi un’altra linea prodotto</button>
+            <button onclick="mostraAnteprima()">Concludi preventivo</button>
+        </div>
 
-function popolaLinee() {
-    const lineaSel = document.getElementById('linea');
-    lineaSel.innerHTML = '';
-    const linee = Object.keys(prodotti.linee).sort();
-    linee.forEach(linea => {
-        const opt = document.createElement('option');
-        opt.value = linea;
-        opt.innerText = linea;
-        lineaSel.appendChild(opt);
-    });
-}
+        <div id="anteprima-section" class="hidden">
+            <div class="preview" id="riepilogo"></div>
+            <div class="form-group">
+                <label for="emailCliente">Inserisci la tua email</label>
+                <input type="email" id="emailCliente" required>
+            </div>
+            <button onclick="inviaPreventivo()">Invia preventivo</button>
+        </div>
 
-function startPreventivo() {
-    currentLinea = document.getElementById('linea').value;
-    mostraProdottiLinea(currentLinea);
-    document.getElementById('cliente-section').classList.add('hidden');
-    document.getElementById('preventivo-section').classList.remove('hidden');
-}
+        <div id="conferma-section" class="hidden">
+            <div class="success">Preventivo inviato con successo. Grazie!</div>
+        </div>
+    </div>
 
-function mostraProdottiLinea(linea) {
-    const prodottiList = document.getElementById('prodotti-list');
-    prodottiList.innerHTML = `<h3>${linea}</h3>`;
-    const categorie = Object.keys(prodotti.linee[linea].categorie);
-    categorie.forEach(categoria => {
-        const catDiv = document.createElement('div');
-        catDiv.className = 'category';
-        const select = document.createElement('select');
-        select.id = `select-${categoria.replace(/\s/g, '-')}`;
-        
-        // Aggiungi l'opzione "Seleziona..." come prima scelta
-        const defaultOption = document.createElement('option');
-        defaultOption.value = "";
-        defaultOption.innerText = `Seleziona ${categoria}...`;
-        select.appendChild(defaultOption);
+    <script>
+        // Password di accesso
+        const PASSWORD = "PASOLINI2025";
 
-        const prodottiCat = prodotti.linee[linea].categorie[categoria];
-        prodottiCat.forEach(prodotto => {
-            const opt = document.createElement('option');
-            opt.value = prodotto.codice;
-            opt.innerText = `${prodotto.codice} - ${prodotto.descrizione} ${prodotto.colore ? '('+prodotto.colore+')' : ''} - €${prodotto.prezzo.toFixed(2)}`;
-            select.appendChild(opt);
-        });
-        
-        catDiv.innerHTML = `<strong>${categoria}</strong>`;
-        catDiv.appendChild(select);
-        catDiv.innerHTML += `
-            <input type="number" min="0" placeholder="Quantità" class="qty-input" id="qty-${categoria.replace(/\s/g, '-')}" style="width: auto; margin-left: 10px;">
-        `;
-        prodottiList.appendChild(catDiv);
-    });
-}
-
-function aggiungiLinea() {
-    salvaQuantitaLinea();
-    document.getElementById('preventivo-section').classList.add('hidden');
-    document.getElementById('cliente-section').classList.remove('hidden');
-}
-
-function salvaQuantitaLinea() {
-    const dati = { linea: currentLinea, prodotti: [] };
-    const categorie = Object.keys(prodotti.linee[currentLinea].categorie);
-    categorie.forEach(categoria => {
-        const select = document.getElementById(`select-${categoria.replace(/\s/g, '-')}`);
-        const codice = select.value;
-        const qty = parseInt(document.getElementById(`qty-${categoria.replace(/\s/g, '-')}`).value) || 0;
-        
-        if (codice && qty > 0) {
-            const prodotto = prodotti.linee[currentLinea].categorie[categoria].find(p => p.codice === codice);
-            if (prodotto) {
-                dati.prodotti.push({
-                    ...prodotto,
-                    categoria,
-                    quantita: qty
-                });
-            }
-        }
-    });
-    if (dati.prodotti.length > 0) preventivo.push(dati);
-}
-
-function mostraAnteprima() {
-    salvaQuantitaLinea();
-    document.getElementById('preventivo-section').classList.add('hidden');
-    document.getElementById('anteprima-section').classList.remove('hidden');
-    popolaRiepilogo();
-}
-
-function popolaRiepilogo() {
-    const tutti = preventivo.flatMap(l => l.prodotti);
-    const riepilogo = {};
-    tutti.forEach(p => {
-        if (!riepilogo[p.codice]) {
-            riepilogo[p.codice] = {...p, quantita: 0};
-        }
-        riepilogo[p.codice].quantita += p.quantita;
-    });
-    let html = `<h3>Riepilogo Preventivo</h3><table width="100%" border="0" style="text-align:left"><tr>
-        <th>Codice</th><th>Descrizione</th><th>Categoria</th><th>Colore</th><th>Quantità</th><th>Prezzo Unitario</th><th>Totale</th></tr>`;
-    let totaleGenerale = 0;
-    Object.values(riepilogo).forEach(p => {
-        const totaleRiga = p.quantita * p.prezzo;
-        totaleGenerale += totaleRiga;
-        html += `<tr>
-            <td>${p.codice}</td>
-            <td>${p.descrizione}</td>
-            <td>${p.categoria}</td>
-            <td>${p.colore || '-'}</td>
-            <td>${p.quantita}</td>
-            <td>€${p.prezzo.toFixed(2)}</td>
-            <td>€${totaleRiga.toFixed(2)}</td>
-        </tr>`;
-    });
-    html += `</table><h3>Totale Generale: €${totaleGenerale.toFixed(2)}</h3>`;
-    document.getElementById('riepilogo').innerHTML = html;
-}
-
-function inviaPreventivo() {
-    // Aggiungi qui la logica di generazione e invio PDF
-    const email = document.getElementById('emailCliente').value;
-    if (!email) {
-        alert("Inserisci un'email valida.");
-        return;
-    }
-
-    // Qui puoi chiamare un servizio backend per generare il PDF e inviarlo
-    // ad es: fetch('/send-pdf', { method: 'POST', body: JSON.stringify({ preventivo, email }) })
-
-    document.getElementById('anteprima-section').classList.add('hidden');
-    document.getElementById('conferma-section').classList.remove('hidden');
-}
+        // Database dei prodotti con i dati forniti
+        const prodotti = {
+            "linee": {
+                "PASOLINI_MEP": {
+                    "categorie": {
+                        "RIPIANI DA 40": [
+                            { "codice": "4320232/8", "descrizione": "RIPIANO LAMIERA 750X400 LISCIO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 18.24 },
+                            { "codice": "4320432/8", "descrizione": "RIPIANO LAMIERA 750X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 14.68 },
+                            { "codice": "4320234/8", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 24.80 },
+                            { "codice": "4320434/8", "descrizione": "RIPIANO LAMIERA 1000X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 23.46 },
+                            { "codice": "4320236/8", "descrizione": "RIPIANO LAMIERA 1330X400 LISCIO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 24.18 },
+                            { "codice": "4320436/8", "descrizione": "RIPIANO LAMIERA 1330X400 FORATO VERNICIATO RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 19.47 }
+                        ],
+                        "PROLUNGHE": [
+                            { "codice": "4200544", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x90 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 15.15 },
+                            { "codice": "5007780", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 250x45 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.81 },
+                            { "codice": "4200546", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x90 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 20.45 },
+                            { "codice": "5007782", "descrizione": "PROLUNGA PER MONTANTE SAGOMATO 430x45 VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 13.88 }
+                        ],
+                        "SCHIENALI": [
+                            { "codice": "4280022", "descrizione": "SCHIENALE DA 750X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.01 },
+                            { "codice": "4280024", "descrizione": "SCHIENALE DA 1000X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 8.64 },
+                            { "codice": "4280032", "descrizione": "SCHIENALE DA 750X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 9.05 },
+                            { "codice": "4280034", "descrizione": "SCHIENALE DA 1000X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 11.34 },
+                            { "codice": "4280026", "descrizione": "SCHIENALE DA 1330X250 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 10.18 },
+                            { "codice": "4280036", "descrizione": "SCHIENALE DA 1330X430 MM VERNICIATO  RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 16.86 }
+                        ],
+                        "MENSOLE": [
+                            { "codice": "4360026", "descrizione": "MENSOLA 400MM (FERRO) RAL 9010 BUCCIATO", "colore": "BIANCO RAL 9010 BUCCIATO", "prezzo": 4.23 }
+                        ],
+                        "BARRE": [
+                            { "codice": "5007020", "descrizione": "BARRA 750mm", "colore": "CROMATE", "prezzo": 10.68 },
+                            { "codice": "5007022", "descrizione": "BARRA 1000mm", "colore": "CROMATE", "prezzo": 12.90 },
+                            { "codice": "5007024", "descrizione": "BARRA 1330mm", "colore": "CROMATE", "prezzo": 17.25 }
+                        ],
+                        "GANCI": [
+                            { "codice": "5007010.1", "descrizione": "GANCIO DA 30cm Diam. 8 mm", "colore": "CROMATI", "prezzo": 2.71 }
+                        ],
+                        "PORTAPREZZI": [
+                            { "codice": "DRA39.1102", "descrizione": "PORTA PREZZO HL PER GANCIO 7,5x3,9cm", "colore": "TRASPARENTE", "prezzo": 0.21 },
+                            { "codice": "MPS.42.0742.BL", "descrizione": "PORTASCANNER 750mm BLU", "colore": "BLU", "prezzo": 1.91 },
+                            { "codice": "MPS.42.0992.BL", "descrizione": "PORTASCANNER 1000mm BLU", "colore": "BLU", "prezzo": 2.44 },
+                            { "codice": "MPS.42.1318.BL", "descrizione": "PORTASCANNER 1330mm BLU", "colore": "BLU", "prezzo": 2.71 }
+                        ]
+                    }
+                },
+                "INTRAC": {
+                    "categorie": {
+                        "RIPIANI DA 40": [
+                            { "codice": "4320234/8.7035", "descrizione": "RIPIANO LAMIERA 1000X400 LISCIO VERNICIATO RAL
