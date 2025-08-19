@@ -5,7 +5,7 @@ Questo progetto contiene un preventivatore dinamico che consente di selezionare 
 ## Come funziona
 
 - I prodotti sono letti dal file `prodotti.json` (da compilare e aggiornare secondo le tue esigenze).
-- Il file principale è [`preventivatore-dinamico.html`](preventivatore-dinamico.html), che mostra l'interfaccia utente e calcola i preventivi.
+- Il file principale è [['(https://i-co-design.github.io/preventivatore-automatico/)), che mostra l'interfaccia utente e calcola i preventivi.
 - Puoi stampare o salvare il preventivo direttamente dalla pagina.
 
 ## Come pubblicare su GitHub Pages
